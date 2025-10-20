@@ -25,25 +25,27 @@ class CareerInput(BaseModel):
     Extra_courses_did: str
     Certifications: str
     Workshops: str
-    Talent_tests_taken: str
-    Olympiads: str
     Reading_and_writing_skills: str
     Memory_capability_score: str
     Interested_subjects: str
     Interested_career_area: str
     Job_Higher_Studies: str
     Type_of_company_want_to_settle_in: str
-    Taken_inputs_from_seniors_or_elders: str
-    Interested_in_games: str
-    Interested_Type_of_Books: str
-    Salary_Range_Expected: str
-    In_a_Relationship: str
-    Gentle_or_Tuff_behaviour: str
     Management_or_Technical: str
-    Salary_work: str
     Hard_smart_worker: str
     Worked_in_teams_ever: str
-    Introvert: str
+    
+    # Note: Removed columns that are no longer in the dataset:
+    # - In_a_Realtionship
+    # - Interested_Type_of_Books
+    # - Interested_in_games
+    # - Gentle_or_Tuff_behaviour
+    # - Taken_inputs_from_seniors_or_elders
+    # - Salary_Range_Expected
+    # - Salary_work
+    # - Olympiads
+    # - Talenttests_taken
+    # - Introvert
 
 class CareerOutput(BaseModel):
     predicted_role: str

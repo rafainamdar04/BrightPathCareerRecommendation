@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 import os
 import matplotlib.pyplot as plt
-from .model import preprocess_input
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), '../career_model.pkl')
 

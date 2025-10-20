@@ -4,7 +4,6 @@ from fastapi import FastAPI, HTTPException
 from app.schemas import CareerInput, CareerOutput, Top3CareerOutput, CareerRoadmap
 from fastapi import Body
 from app.model import predict_career, predict_top3_careers
-from app.model import preprocess_input
 from app.utils import get_career_roadmap
 from fastapi.middleware.cors import CORSMiddleware
 
