@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+
+/* Custom brand colors */
+:root {
+  --primary: 79 70 229; /* indigo-600 */
+  --primary-dark: 67 56 202; /* indigo-700 */
+  --accent: 16 185 129; /* emerald-500 */
+  --accent-dark: 5 150 105; /* emerald-600 */
+  --highlight: 168 85 247; /* purple-500 */
+}
+
+/* Global base styles */
+@layer base {
+  html {
+    @apply antialiased;
+  }
+  body {
+    @apply font-sans text-slate-800 dark:text-slate-100 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-purple-50/40 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950;
+  }
+}
+
+@layer utilities {
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+  
+  /* Custom gradient backgrounds */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, rgb(79 70 229) 0%, rgb(99 102 241) 100%);
+  }
+  
+  .bg-gradient-accent {
+    background: linear-gradient(135deg, rgb(16 185 129) 0%, rgb(52 211 153) 100%);
+  }
+}
+
+/* Reusable components */
+@layer components {
+  .surface {
+    @apply rounded-2xl border border-white/20 bg-white/70 dark:bg-white/5 backdrop-blur-md shadow-lg;
+  }
+  .card {
+    @apply rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-lg;
+  }
+  .section-header {
+    @apply text-xl font-semibold text-slate-900 dark:text-white mb-6 pb-4 border-b border-slate-200 dark:border-slate-800;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-primary text-white shadow-md hover:shadow-lg hover:scale-[1.02];
+  }
+  .btn-secondary {
+    @apply btn bg-white text-primary border border-primary/30 hover:bg-primary/5 dark:bg-slate-800 dark:text-primary dark:border-primary/40 hover:scale-[1.02];
+  }
+  .btn-ghost {
+    @apply btn text-slate-700 dark:text-slate-300 hover:bg-slate-100/60 dark:hover:bg-slate-800/70 hover:scale-[1.02];
+  }
+  .input-base {
+    @apply w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 placeholder-slate-400 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-600 transition-all duration-300 ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blob {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+@keyframes gradient-x {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.8s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.8s ease-out;
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+/* Checkbox custom styles */
+.checkbox-label input:checked ~ .checkbox-box .checkbox-icon-container {
+  border-color: rgb(15 23 42); /* slate-900 */
+  background-color: rgb(15 23 42);
+}
+
+.checkbox-label input:checked ~ .checkbox-box .checkbox-icon {
+  opacity: 1;
+  transform: scale(1);
+}

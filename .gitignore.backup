@@ -1,0 +1,83 @@
+# Root gitignore for BrightPathCareerRecommendation
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Node / Frontend (frontend-vite has its own .gitignore too)
+frontend-vite/node_modules/
+frontend-vite/dist/
+frontend-vite/build/
+frontend-vite/.vite/
+frontend-vite/.parcel-cache/
+frontend-vite/npm-debug.log*
+frontend-vite/yarn-debug.log*
+frontend-vite/yarn-error.log*
+frontend-vite/pnpm-debug.log*
+frontend-vite/.DS_Store
+frontend-vite/Thumbs.db
+frontend-vite/.env
+frontend-vite/.env.*
+frontend-vite/.env.local
+frontend-vite/.env.*.local
+frontend-vite/coverage/
+frontend-vite/*.tsbuildinfo
+
+# Python / Backend
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/.Python
+backend/build/
+backend/develop-eggs/
+backend/dist/
+backend/downloads/
+backend/eggs/
+backend/.eggs/
+backend/lib/
+backend/lib64/
+backend/parts/
+backend/sdist/
+backend/var/
+backend/wheels/
+backend/share/python-wheels/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/.coverage
+backend/.coverage.*
+backend/htmlcov/
+backend/coverage.xml
+backend/nosetests.xml
+backend/test-results.xml
+backend/coverage/
+backend/pip-wheel-metadata/
+backend/.venv/
+backend/venv/
+backend/env/
+backend/ENV/
+backend/venv.bak/
+backend/.ipynb_checkpoints/
+
+# Python env files
+backend/.env
+backend/.env.*
+
+# Data / temp
+backend/*.log
+backend/tmp/
+backend/.cache/
+
+# Global env at root
+.env
+.env.*
