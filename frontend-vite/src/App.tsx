@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { LandingPage } from './LandingPage'
 import { Navbar } from './Navbar'
 import { CareerRecommendation } from './pages/CareerRecommendation'
@@ -47,7 +48,18 @@ function App() {
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
       />
-      {renderPage()}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentPage}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          className="px-4 sm:px-6 lg:px-8 py-6"
+        >
+          {renderPage()}
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }
