@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="100%" height="100%" fill="#f7f7f7"/>
+  <text x="50" y="80" font-size="28" font-family="Segoe UI, Arial" fill="#333" font-weight="600">SHAP Global Importance</text>
+  <text x="50" y="120" font-size="16" font-family="Segoe UI, Arial" fill="#555">Placeholder: Generate with backend/generate_figures.py</text>
+  <text x="50" y="150" font-size="16" font-family="Segoe UI, Arial" fill="#555">Python 3.14 currently unsupported by SHAP. Use Python 3.10–3.13.</text>
+  <g transform="translate(50, 200)">
+    <rect x="0" y="0" width="700" height="25" fill="#d0d0d0" rx="4"/>
+    <rect x="0" y="45" width="560" height="25" fill="#d0d0d0" rx="4"/>
+    <rect x="0" y="90" width="420" height="25" fill="#d0d0d0" rx="4"/>
+    <rect x="0" y="135" width="330" height="25" fill="#d0d0d0" rx="4"/>
+    <rect x="0" y="180" width="260" height="25" fill="#d0d0d0" rx="4"/>
+    <text x="710" y="18" font-size="14" font-family="Segoe UI, Arial" fill="#777">feature_1</text>
+    <text x="570" y="63" font-size="14" font-family="Segoe UI, Arial" fill="#777">feature_2</text>
+    <text x="430" y="108" font-size="14" font-family="Segoe UI, Arial" fill="#777">feature_3</text>
+    <text x="340" y="153" font-size="14" font-family="Segoe UI, Arial" fill="#777">feature_4</text>
+    <text x="270" y="198" font-size="14" font-family="Segoe UI, Arial" fill="#777">feature_5</text>
+  </g>
+</svg>
