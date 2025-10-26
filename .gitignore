@@ -11,6 +11,9 @@ __pycache__/
 build/
 develop-eggs/
 dist/
+frontend-vite/dist/
+node_modules/
+frontend-vite/node_modules/
 downloads/
 eggs/
 .eggs/
@@ -77,17 +80,23 @@ secrets.*
 Thumbs.db
 desktop.ini
 
-# Data and model artifacts (edit if you intentionally commit these)
-# Keep placeholders if needed: create a data/.gitkeep or README.md to track the folder
-data/
-!data/.gitkeep
-!data/README.md
+# Data and model artifacts (scoped to backend)
+# Keep placeholders if needed: create a backend/data/.gitkeep or README.md to track the folder
+backend/data/
+!backend/data/.gitkeep
+!backend/data/README.md
+# Keep known dataset files in repo
+!backend/data/roo.csv
+!backend/data/roo_backup.csv
+
 models/
 !models/.gitkeep
+
 # Common ML artifacts
 *.pkl
 *.joblib
 *.h5
+!backend/career_evolution_model.h5
 *.pt
 *.onnx
 *.bin
