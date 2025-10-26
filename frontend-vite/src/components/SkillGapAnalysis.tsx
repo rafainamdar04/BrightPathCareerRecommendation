@@ -110,7 +110,7 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
     <div className="mb-8 bg-white dark:bg-slate-900 rounded-xl shadow-sm p-8 border border-slate-200 dark:border-slate-800">
       {/* Header */}
       <div className="flex items-center gap-3 mb-8 pb-6 border-b border-slate-200 dark:border-slate-800">
-        <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+  <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
           <svg
             className="w-6 h-6 text-white"
             fill="none"
@@ -136,16 +136,16 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
       </div>
 
       {/* Resume Upload Section */}
-      <div className="mb-8 p-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl border border-indigo-200 dark:border-indigo-800">
+  <div className="mb-8 p-6 bg-gradient-to-br from-primary/10 to-primary-600/10 dark:from-primary/10 dark:to-primary/10 rounded-xl border border-primary/30 dark:border-primary/30">
         <div className="flex items-center gap-2 mb-4">
-          <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
-          <h4 className="text-lg font-semibold text-indigo-900 dark:text-indigo-300">
+          <h4 className="text-lg font-semibold text-slate-900 dark:text-white">
             Upload Your Resume for Accurate Analysis
           </h4>
         </div>
-        <p className="text-sm text-indigo-700 dark:text-indigo-300 mb-4">
+  <p className="text-sm text-slate-700 dark:text-slate-300 mb-4">
           Get a more accurate skill gap analysis by uploading your resume. We'll extract your skills and compare them with the requirements for {role}.
         </p>
         
@@ -154,7 +154,7 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
           <button
             onClick={() => setUseResume(!useResume)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              useResume ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-600'
+              useResume ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-600'
             }`}
           >
             <span
@@ -179,8 +179,8 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
                   className="hidden"
                   disabled={uploading}
                 />
-                <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-lg border-2 border-dashed border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors">
-                  <svg className="w-8 h-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-lg border-2 border-dashed border-primary/30 dark:border-primary/30 hover:border-primary dark:hover:border-primary transition-colors">
+                  <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <div className="flex-1">
@@ -197,7 +197,7 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
               <button
                 onClick={handleUploadResume}
                 disabled={!file || uploading}
-                className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+                className="w-full px-6 py-3 btn-primary font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg"
               >
                 {uploading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -286,7 +286,7 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
             'Strong potential! Focus on building core skills for this role.'}
         </p>
         <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700">
-          <svg className="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -402,10 +402,10 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
       </div>
 
       {/* AI Recommendations */}
-      <div className="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/10 dark:to-pink-900/10 rounded-lg p-6 border border-purple-200 dark:border-purple-800">
+  <div className="mb-6 bg-gradient-to-r from-primary/10 to-primary-600/10 dark:from-primary/10 dark:to-primary/10 rounded-lg p-6 border border-primary/30 dark:border-primary/30">
         <div className="flex items-center gap-2 mb-4">
           <svg
-            className="w-6 h-6 text-purple-600 dark:text-purple-400"
+            className="w-6 h-6 text-primary"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -417,14 +417,14 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
               d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
             />
           </svg>
-          <h4 className="text-lg font-semibold text-purple-900 dark:text-purple-300">
+          <h4 className="text-lg font-semibold text-slate-900 dark:text-white">
             AI Recommendations
           </h4>
         </div>
         <div className="space-y-3">
           {analysis.recommendations.map((rec, i) => (
-            <div key={i} className="flex items-start gap-3 p-3 bg-white dark:bg-slate-800 rounded-lg">
-              <div className="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+              <div key={i} className="flex items-start gap-3 p-3 bg-white dark:bg-slate-800 rounded-lg">
+              <div className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
                 {i + 1}
               </div>
               <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{rec}</p>

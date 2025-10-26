@@ -173,7 +173,7 @@ export function EnhancedRoadmapDisplay({ data, role }: EnhancedRoadmapDisplayPro
         </div>
         <div className="text-right">
           <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Career Readiness</p>
-          <p className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <p className="text-3xl font-bold bg-gradient-to-r from-primary to-primary-600 bg-clip-text text-transparent">
             {roleProgress?.readinessScore || 0}%
           </p>
           {estimateCompletion() && (
@@ -188,7 +188,7 @@ export function EnhancedRoadmapDisplay({ data, role }: EnhancedRoadmapDisplayPro
       <div className="mb-6 flex justify-center">
         <button
           onClick={() => setShowVisualization(!showVisualization)}
-          className="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg font-medium hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-colors"
+          className="px-4 py-2 bg-primary/10 dark:bg-primary/10 text-primary rounded-lg font-medium hover:bg-primary/15 transition-colors"
         >
           {showVisualization ? 'Hide' : 'Show'} Progress Visualization
         </button>
@@ -219,7 +219,7 @@ export function EnhancedRoadmapDisplay({ data, role }: EnhancedRoadmapDisplayPro
         </div>
         <div className="relative w-full h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+            className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary-600 rounded-full transition-all duration-500"
             style={{ width: `${roleProgress?.readinessScore || 0}%` }}
           />
         </div>

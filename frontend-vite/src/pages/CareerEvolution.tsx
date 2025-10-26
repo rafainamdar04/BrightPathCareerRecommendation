@@ -1,5 +1,5 @@
 import React from 'react'
-import { CareerRecommendation } from './CareerRecommendation'
+// Deprecated: consolidated into Career Insights
 
 const fieldConfig = [
   // Academic Performance (9 fields) - Percentages 0-100
@@ -111,6 +111,8 @@ function CheckboxGroup({ name, options }: { name: string, options: readonly stri
 }
 
 export function CareerEvolution() {
-  // Unified journey: Top 3 → Compare → Tabs (Evolution, Roadmap, XAI)
-  return <CareerRecommendation />
+  if (import.meta.env.DEV) {
+    console.warn('CareerEvolution page is deprecated. Use Career Insights instead.')
+  }
+  return null
 }

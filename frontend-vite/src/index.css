@@ -4,14 +4,24 @@
 
 html, body, #root { height: 100%; }
 
+/* Simple, professional palette (light/dark via CSS variables) */
+:root {
+  --background: 248 250 252; /* #f8fafc */
+  --surface: 255 255 255;   /* #ffffff */
+  --text: 15 23 42;         /* #0f172a */
+  --muted: 100 116 139;     /* #64748b */
+  --border: 226 232 240;    /* #e2e8f0 */
+  --primary: 37 99 235;     /* #2563eb */
+  --primary-600: 29 78 216; /* #1d4ed8 */
+}
+
 /* Global base styles */
 @layer base {
   html {
     @apply antialiased;
   }
   body {
-    /* Palette B: solid neutrals, no AI-like gradients */
-    @apply font-sans text-[#18181B] dark:text-gray-200 bg-[#FAFAFA] dark:bg-[#0B0F14];
+    @apply font-sans text-slate-800 dark:text-slate-100 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900;
   }
 }
 
@@ -29,35 +39,37 @@ html, body, #root { height: 100%; }
     animation-delay: 4s;
   }
   
-  /* Minimal brand utility accents (kept subtle) */
-  .ring-primary-soft { box-shadow: 0 0 0 3px rgba(99,102,241,0.2); }
+  /* Brand gradient background (primary) */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, rgb(var(--primary)) 0%, rgb(var(--primary-600)) 100%);
+  }
 }
 
 /* Reusable components */
 @layer components {
   .surface {
-    @apply rounded-2xl border border-[#E4E4E7] dark:border-[#1F2937] bg-white dark:bg-[#111827] shadow-sm;
+    @apply rounded-2xl border border-white/20 bg-white/70 dark:bg-white/5 backdrop-blur-md shadow-lg;
   }
   .card {
-    @apply rounded-2xl border border-[#E4E4E7] dark:border-[#1F2937] bg-white dark:bg-[#111827] shadow-md;
+    @apply rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-lg;
   }
   .section-header {
-    @apply text-xl font-semibold text-[#18181B] dark:text-white mb-6 pb-4 border-b border-[#E4E4E7] dark:border-[#1F2937];
+    @apply text-xl font-semibold text-slate-900 dark:text-white mb-6 pb-4 border-b border-slate-200 dark:border-slate-800;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/40 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-primary {
-    @apply btn bg-primary text-white shadow-sm hover:shadow-md hover:-translate-y-0.5;
+    @apply btn bg-primary text-white hover:bg-primary-600 shadow-md hover:shadow-lg hover:scale-[1.02];
   }
   .btn-secondary {
-    @apply btn bg-white text-[#4f46e5] border border-[#E4E4E7] hover:bg-zinc-50 dark:bg-[#111827] dark:text-[#6366f1] dark:border-[#1F2937] hover:-translate-y-0.5;
+    @apply btn bg-white text-primary border border-primary/30 hover:bg-primary/5 dark:bg-slate-800 dark:text-primary dark:border-primary/40 hover:scale-[1.02];
   }
   .btn-ghost {
-    @apply btn text-zinc-700 dark:text-gray-300 hover:bg-zinc-100 dark:hover:bg-gray-800;
+    @apply btn text-slate-700 dark:text-slate-300 hover:bg-slate-100/60 dark:hover:bg-slate-800/70 hover:scale-[1.02];
   }
   .input-base {
-    @apply w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border-2 border-[#E4E4E7] dark:border-[#1F2937] placeholder-zinc-400 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-600 transition-all duration-200 ease-out;
+    @apply w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 placeholder-slate-400 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 ease-in-out;
   }
 }
 
@@ -134,13 +146,20 @@ html, body, #root { height: 100%; }
   animation: gradient-x 3s ease infinite;
 }
 
-/* Checkbox custom styles */
+/* Checkbox custom styles - aligned to primary */
 .checkbox-label input:checked ~ .checkbox-box .checkbox-icon-container {
-  border-color: rgb(15 23 42); /* slate-900 */
-  background-color: rgb(15 23 42);
+  border-color: rgb(var(--primary));
+  background: linear-gradient(135deg, rgb(var(--primary)), rgb(var(--primary-600)));
 }
 
 .checkbox-label input:checked ~ .checkbox-box .checkbox-icon {
   opacity: 1;
   transform: scale(1);
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
 }

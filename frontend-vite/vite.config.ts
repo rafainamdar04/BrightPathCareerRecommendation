@@ -1,21 +1,27 @@
-import { defineConfig } from 'vite'
+// Avoid adding @types/node; declare process for type-checking in this config file only.
+declare const process: any;
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Proxy to FastAPI backend (assumes backend runs on http://localhost:8000)
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 5173,
-    proxy: {
-      '/predict_top3_careers': 'http://localhost:8000',
-      '/xai_explanations': 'http://localhost:8000',
-      '/career_roadmap': 'http://localhost:8000',
-      '/predict_career_evolution': 'http://localhost:8000',
-      '/upload_resume': 'http://localhost:8000',
-      '/analyze_resume_for_role': 'http://localhost:8000',
-      '/compare_resume_with_roadmap': 'http://localhost:8000',
-      '/static': 'http://localhost:8000',
-      '/api': 'http://localhost:8000',
+// Proxy to FastAPI backend using configurable target via VITE_API_BASE_URL
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const target = (env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '')
+  return {
+    plugins: [react()],
+    server: {
+      port: 5173,
+      proxy: {
+        '/predict_top3_careers': { target, changeOrigin: true },
+        '/xai_explanations': { target, changeOrigin: true },
+        '/career_roadmap': { target, changeOrigin: true },
+        '/predict_career_evolution': { target, changeOrigin: true },
+        '/upload_resume': { target, changeOrigin: true },
+        '/analyze_resume_for_role': { target, changeOrigin: true },
+        '/compare_resume_with_roadmap': { target, changeOrigin: true },
+        '/static': { target, changeOrigin: true },
+        '/api': { target, changeOrigin: true },
+      }
     }
   }
 })
