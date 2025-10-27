@@ -1,0 +1,46 @@
+%% BrightPath - Resume Analysis Sequence Diagram
+%% NLP-based resume parsing and analysis
+
+sequenceDiagram
+    autonumber
+    
+    actor User
+    participant UI as Frontend
+    participant API as FastAPI
+    participant Parser as Resume Parser
+    participant NLP as spaCy NLP
+    participant SBERT as SBERT Analyzer
+    participant KB as Knowledge Base
+
+    Note over User,KB: Resume Upload & Parsing
+    
+    User->>UI: Upload resume (PDF/DOCX)
+    UI->>API: POST /upload_resume
+    
+    API->>Parser: Extract text
+    Parser->>Parser: Parse PDF/DOCX
+    
+    Parser->>NLP: Process text
+    NLP->>NLP: Extract entities
+    NLP->>NLP: Identify skills
+    NLP->>NLP: Parse education/experience
+    
+    NLP-->>API: Return parsed data
+    API-->>UI: JSON with resume info
+    UI-->>User: Display parsed resume
+    
+    Note over User,KB: Gap Analysis
+    
+    User->>UI: Analyze for target role
+    UI->>API: POST /compare_resume_with_roadmap
+    
+    API->>KB: Get role requirements
+    API->>SBERT: Calculate embeddings
+    
+    SBERT->>SBERT: Semantic similarity
+    SBERT->>SBERT: Match skills
+    SBERT->>SBERT: Calculate gap score
+    
+    SBERT-->>API: Return analysis
+    API-->>UI: JSON with gap report
+    UI-->>User: Display recommendations

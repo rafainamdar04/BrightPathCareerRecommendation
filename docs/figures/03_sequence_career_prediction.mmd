@@ -1,0 +1,43 @@
+%% BrightPath - Career Prediction Sequence Diagram
+%% Primary user flow for career recommendation
+
+sequenceDiagram
+    autonumber
+    
+    actor User
+    participant UI as Frontend
+    participant API as FastAPI
+    participant FE as Feature Engine
+    participant ML as ML Model
+    participant XAI as SHAP
+
+    Note over User,XAI: Career Prediction Flow
+    
+    User->>UI: Fill form (28 features)
+    UI->>UI: Validate inputs
+    UI->>API: POST /predict_top3_careers
+    
+    API->>FE: Process features
+    FE->>FE: Label encode categoricals
+    FE->>FE: Standard scale numericals
+    
+    FE->>ML: Feed to Random Forest
+    ML->>ML: Predict probabilities
+    ML->>ML: Select top 3 careers
+    
+    ML-->>API: Return predictions
+    API-->>UI: JSON response
+    UI-->>User: Display top 3 careers
+    
+    Note over User,XAI: XAI Analysis Flow
+    
+    User->>UI: Click "Explain Career"
+    UI->>API: POST /xai_explanations/{role}
+    
+    API->>XAI: Initialize SHAP
+    XAI->>XAI: Calculate SHAP values
+    XAI->>XAI: Generate visualization
+    
+    XAI-->>API: Return explanations
+    API-->>UI: JSON + plot URL
+    UI-->>User: Display feature importance

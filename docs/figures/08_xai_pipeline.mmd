@@ -1,0 +1,66 @@
+%% BrightPath - XAI Explainability Pipeline
+%% Shows how SHAP generates explanations
+
+graph TB
+    subgraph Input["Input"]
+        User[User Profile<br/>28 Features]
+        Model[Trained Model<br/>Random Forest]
+        Career[Target Career<br/>Role to Explain]
+    end
+    
+    subgraph SHAP_Process["SHAP Analysis Process"]
+        Init[Initialize SHAP<br/>TreeExplainer]
+        Baseline[Background Dataset<br/>100 samples]
+        
+        Calc[Calculate<br/>SHAP Values]
+        
+        Global[Global Importance<br/>All Features]
+        Local[Local Explanation<br/>This Prediction]
+        
+        Init --> Baseline
+        Baseline --> Calc
+        Calc --> Global
+        Calc --> Local
+    end
+    
+    subgraph Visualization["Visualization Generation"]
+        Water[Waterfall Plot<br/>Feature Contributions]
+        Force[Force Plot<br/>Push/Pull Effects]
+        Summary[Summary Plot<br/>Distribution]
+        
+        Global --> Summary
+        Local --> Water
+        Local --> Force
+    end
+    
+    subgraph Output["Explanation Output"]
+        Top[Top Factors<br/>Ranked by Impact]
+        Plots[Interactive Plots<br/>PNG/SVG]
+        Insights[Natural Language<br/>Explanations]
+        
+        Water --> Plots
+        Force --> Plots
+        Summary --> Plots
+        
+        Calc --> Top
+        Top --> Insights
+    end
+    
+    %% Flow
+    User --> Init
+    Model --> Init
+    Career --> Calc
+    
+    Plots --> Output_Display[Display to User]
+    Insights --> Output_Display
+    
+    %% Styling
+    classDef inputStyle fill:#E3F2FD,stroke:#1565C0,stroke-width:2px
+    classDef procStyle fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px
+    classDef vizStyle fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px
+    classDef outStyle fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px
+    
+    class User,Model,Career inputStyle
+    class Init,Baseline,Calc,Global,Local procStyle
+    class Water,Force,Summary vizStyle
+    class Top,Plots,Insights,Output_Display outStyle

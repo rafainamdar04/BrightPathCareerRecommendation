@@ -1,0 +1,64 @@
+%% BrightPath - High-Level Data Flow Diagram
+%% Shows how data flows through the system
+
+graph LR
+    User([User])
+    
+    subgraph Input["Input Collection"]
+        Form[User Profile Form<br/>28 Features]
+        Resume[Resume Upload<br/>PDF/DOCX]
+    end
+    
+    subgraph Processing["Data Processing"]
+        FE[Feature Engineering<br/>Encoding + Scaling]
+        NLP[NLP Processing<br/>Text Extraction]
+    end
+    
+    subgraph Models["ML/AI Models"]
+        RF[Career Prediction<br/>Random Forest]
+        TF[Career Evolution<br/>Transformer]
+        SHAP[Explainability<br/>SHAP]
+        SBERT[Resume Analysis<br/>SBERT]
+    end
+    
+    subgraph Output["System Output"]
+        Pred[Top 3 Careers<br/>Confidence Scores]
+        Evol[Career Trajectory<br/>Timeline]
+        Exp[XAI Explanations<br/>Feature Importance]
+        Gap[Skill Gap Analysis<br/>Recommendations]
+    end
+    
+    %% Main Flow
+    User --> Form
+    User --> Resume
+    
+    Form --> FE
+    Resume --> NLP
+    
+    FE --> RF
+    FE --> TF
+    FE --> SHAP
+    NLP --> SBERT
+    
+    RF --> Pred
+    TF --> Evol
+    SHAP --> Exp
+    SBERT --> Gap
+    
+    Pred --> User
+    Evol --> User
+    Exp --> User
+    Gap --> User
+    
+    %% Styling
+    classDef userStyle fill:#E1F5FE,stroke:#01579B,stroke-width:3px
+    classDef inputStyle fill:#F3E5F5,stroke:#4A148C,stroke-width:2px
+    classDef processStyle fill:#FFF3E0,stroke:#E65100,stroke-width:2px
+    classDef modelStyle fill:#E8F5E9,stroke:#1B5E20,stroke-width:2px
+    classDef outputStyle fill:#FCE4EC,stroke:#880E4F,stroke-width:2px
+    
+    class User userStyle
+    class Form,Resume inputStyle
+    class FE,NLP processStyle
+    class RF,TF,SHAP,SBERT modelStyle
+    class Pred,Evol,Exp,Gap outputStyle

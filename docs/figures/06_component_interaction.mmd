@@ -1,0 +1,78 @@
+%% BrightPath - Component Interaction Diagram
+%% Shows how major components interact
+
+graph TB
+    subgraph Frontend["Frontend Components"]
+        Pages[Pages<br/>Landing, Career, Insights]
+        Forms[Input Forms<br/>28 Feature Fields]
+        Display[Display Components<br/>Results, Charts, Timeline]
+    end
+    
+    subgraph Backend["Backend Components"]
+        direction TB
+        
+        Router[FastAPI Router<br/>Endpoint Handler]
+        
+        subgraph Core["Core Services"]
+            Pred[Career Prediction]
+            Evol[Career Evolution]
+            Expl[XAI Explanation]
+        end
+        
+        subgraph Support["Support Services"]
+            Road[Roadmap Service]
+            Res[Resume Service]
+        end
+    end
+    
+    subgraph Models["Model Layer"]
+        RF[(Random Forest<br/>Career Classifier)]
+        Trans[(Transformer<br/>Evolution Model)]
+        Time[(Time Predictor<br/>Neural Net)]
+    end
+    
+    subgraph Data["Data Layer"]
+        Dataset[(Training Data<br/>28 Features<br/>34 Classes)]
+        Cache[(Model Cache<br/>Loaded Models)]
+    end
+    
+    %% Frontend Interactions
+    Pages --> Forms
+    Pages --> Display
+    Forms -->|Submit| Router
+    
+    %% Backend Routing
+    Router --> Pred
+    Router --> Evol
+    Router --> Expl
+    Router --> Road
+    Router --> Res
+    
+    %% Service to Model
+    Pred --> RF
+    Evol --> Trans
+    Evol --> Time
+    
+    %% Model to Data
+    RF -.->|Load| Cache
+    Trans -.->|Load| Cache
+    Time -.->|Load| Cache
+    Cache -.->|Source| Dataset
+    
+    %% Results Flow
+    Pred -->|Results| Display
+    Evol -->|Results| Display
+    Expl -->|Results| Display
+    Road -->|Results| Display
+    Res -->|Results| Display
+    
+    %% Styling
+    classDef feStyle fill:#E3F2FD,stroke:#1565C0,stroke-width:2px
+    classDef beStyle fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px
+    classDef modelStyle fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px
+    classDef dataStyle fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px
+    
+    class Pages,Forms,Display feStyle
+    class Router,Pred,Evol,Expl,Road,Res beStyle
+    class RF,Trans,Time modelStyle
+    class Dataset,Cache dataStyle

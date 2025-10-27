@@ -1,0 +1,72 @@
+%% BrightPath Career Recommendation System - System Architecture
+%% Clean and legible design for academic papers
+
+graph TB
+    subgraph Client["Client Layer"]
+        Browser[Web Browser]
+        UI[React Frontend<br/>TypeScript + Vite<br/>Port: 5173]
+        Browser --> UI
+    end
+
+    subgraph Gateway["API Gateway Layer"]
+        Proxy[Development Proxy<br/>CORS Handler]
+        API[FastAPI REST API<br/>Python 3.10+<br/>Port: 8000]
+        Proxy --> API
+    end
+
+    subgraph Services["Application Services Layer"]
+        direction TB
+        
+        subgraph ML_Services["Machine Learning Services"]
+            CP[Career Predictor<br/>Random Forest]
+            CE[Career Evolution<br/>Transformer + LSTM]
+        end
+        
+        subgraph AI_Services["AI Services"]
+            XAI[Explainable AI<br/>SHAP Analysis]
+            RG[Roadmap Generator<br/>Knowledge Base]
+        end
+        
+        subgraph NLP_Services["NLP Services"]
+            RP[Resume Parser<br/>spaCy NLP]
+            RA[Resume Analyzer<br/>SBERT Embeddings]
+        end
+    end
+
+    subgraph Data["Data & Model Layer"]
+        direction LR
+        DS[(Career Dataset<br/>28 Features<br/>34 Classes)]
+        Models[(Trained Models<br/>RF + Transformer<br/>LSTM + Time)]
+        Static[(Static Assets<br/>Visualizations)]
+    end
+
+    %% Main Flow Connections
+    UI -->|HTTP REST| Proxy
+    API --> CP
+    API --> CE
+    API --> XAI
+    API --> RG
+    API --> RP
+    API --> RA
+    
+    %% Data Connections
+    CP -.->|Load| Models
+    CE -.->|Load| Models
+    CP -.->|Train| DS
+    CE -.->|Train| DS
+    XAI -.->|Generate| Static
+    
+    %% Styling
+    classDef clientStyle fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    classDef gatewayStyle fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
+    classDef mlStyle fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    classDef aiStyle fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
+    classDef nlpStyle fill:#FCE4EC,stroke:#C2185B,stroke-width:2px
+    classDef dataStyle fill:#FFF9C4,stroke:#F9A825,stroke-width:2px
+    
+    class Browser,UI clientStyle
+    class Proxy,API gatewayStyle
+    class CP,CE mlStyle
+    class XAI,RG aiStyle
+    class RP,RA nlpStyle
+    class DS,Models,Static dataStyle

@@ -1,0 +1,82 @@
+%% BrightPath - ML Pipeline Architecture
+%% Detailed view of machine learning pipeline
+
+graph TB
+    subgraph Input["Input Data"]
+        Raw[Raw User Input<br/>28 Features]
+    end
+    
+    subgraph Preprocessing["Data Preprocessing"]
+        direction LR
+        
+        Cat[Categorical Features<br/>14 attributes]
+        Num[Numerical Features<br/>14 attributes]
+        
+        LE[Label Encoder<br/>String to Integer]
+        SS[Standard Scaler<br/>Normalization]
+        
+        Cat --> LE
+        Num --> SS
+    end
+    
+    subgraph Models["ML Models"]
+        direction TB
+        
+        subgraph Primary["Primary Model"]
+            RF[Random Forest<br/>n_estimators: 100<br/>max_depth: 20]
+            RFOut[34 Career Classes<br/>Probability Distribution]
+            RF --> RFOut
+        end
+        
+        subgraph Evolution["Evolution Model"]
+            Trans[Transformer<br/>Multi-Head Attention<br/>Hidden: 128]
+            LSTM[LSTM Fallback<br/>Hidden: 64<br/>Layers: 2]
+            Trans -.Alternative.-> LSTM
+        end
+        
+        subgraph TimeModel["Time Prediction"]
+            NN[Neural Network<br/>Dense: 64→32→1<br/>Activation: ReLU]
+        end
+    end
+    
+    subgraph PostProcess["Post-Processing"]
+        TopK[Top-K Selection<br/>K = 3]
+        Conf[Confidence Scoring<br/>Scale: 1-10]
+        Timeline[Timeline Generation<br/>Personalized]
+    end
+    
+    subgraph Output["System Output"]
+        Result[Career Predictions<br/>Explanations<br/>Timeline]
+    end
+    
+    %% Flow
+    Raw --> Cat
+    Raw --> Num
+    
+    LE --> RF
+    SS --> RF
+    
+    LE --> Trans
+    SS --> Trans
+    
+    RFOut --> TopK
+    TopK --> Conf
+    
+    Trans --> Timeline
+    NN --> Timeline
+    
+    Conf --> Result
+    Timeline --> Result
+    
+    %% Styling
+    classDef inputStyle fill:#E1F5FE,stroke:#01579B,stroke-width:2px
+    classDef procStyle fill:#F3E5F5,stroke:#4A148C,stroke-width:2px
+    classDef modelStyle fill:#E8F5E9,stroke:#1B5E20,stroke-width:2px
+    classDef postStyle fill:#FFF3E0,stroke:#E65100,stroke-width:2px
+    classDef outStyle fill:#FCE4EC,stroke:#880E4F,stroke-width:2px
+    
+    class Raw inputStyle
+    class Cat,Num,LE,SS procStyle
+    class RF,RFOut,Trans,LSTM,NN modelStyle
+    class TopK,Conf,Timeline postStyle
+    class Result outStyle

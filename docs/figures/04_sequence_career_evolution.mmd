@@ -1,0 +1,34 @@
+%% BrightPath - Career Evolution Sequence Diagram
+%% AI-powered career trajectory prediction
+
+sequenceDiagram
+    autonumber
+    
+    actor User
+    participant UI as Frontend
+    participant API as FastAPI
+    participant FE as Feature Engine
+    participant TR as Transformer
+    participant TP as Time Predictor
+
+    Note over User,TP: Career Evolution Prediction
+    
+    User->>UI: Request career evolution
+    UI->>API: POST /predict_career_evolution
+    
+    API->>FE: Process user profile
+    FE->>FE: Encode all 28 features
+    
+    FE->>TR: Feed to Transformer
+    TR->>TR: Apply multi-head attention
+    TR->>TR: Predict next 3 roles
+    
+    TR->>TP: Get timeframes
+    TP->>TP: Calculate based on profile
+    TP->>TP: Personalize estimates
+    
+    TP-->>API: Return trajectory
+    API-->>UI: JSON with timeline
+    UI-->>User: Display career path
+    
+    Note over User,TP: Result: Current → Senior → Lead → Principal<br/>with personalized timeframes
