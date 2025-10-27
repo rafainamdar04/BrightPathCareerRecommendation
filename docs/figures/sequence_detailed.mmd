@@ -1,0 +1,262 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant UI as React Frontend<br/>(Vite + TypeScript)
+    participant Proxy as Vite Dev Proxy
+    participant API as FastAPI Server
+    participant FE as Feature Engineering
+    participant ML as ML Models<br/>(RF/Transformer/LSTM)
+    participant XAI as SHAP Explainer
+    participant RG as Roadmap Generator
+    participant RP as Resume Parser<br/>(NLP)
+    participant DB as Data Storage<br/>(CSV/Models)
+
+    %% === SCENARIO 1: Career Prediction ===
+    rect rgb(230, 245, 255)
+        Note over User,DB: Scenario 1: Career Prediction & Top 3 Recommendations
+        
+        User->>UI: 1. Navigate to Career Recommendation Page
+        User->>UI: 2. Fill form with 28 features<br/>(Academic scores, skills, preferences)
+        
+        UI->>UI: 3. Validate input fields
+        UI->>Proxy: 4. POST /predict_top3_careers<br/>{28 feature values}
+        
+        Proxy->>API: 5. Forward request to backend
+        API->>FE: 6. Extract & preprocess features
+        
+        FE->>FE: 7. Apply label encoding<br/>(categorical features)
+        FE->>FE: 8. Apply standard scaling<br/>(numerical features)
+        
+        FE->>ML: 9. Feed processed features to<br/>Random Forest model
+        ML->>ML: 10. Predict probabilities for<br/>all career classes
+        ML->>ML: 11. Select top 3 careers by<br/>confidence scores
+        
+        ML-->>API: 12. Return top 3 predictions<br/>[{career, confidence}]
+        API-->>Proxy: 13. JSON response
+        Proxy-->>UI: 14. Forward response
+        
+        UI->>UI: 15. Display top 3 careers with<br/>confidence scores
+        UI->>UI: 16. Show action buttons:<br/>XAI, Roadmap, Compare
+    end
+
+    %% === SCENARIO 2: XAI Analysis ===
+    rect rgb(255, 245, 230)
+        Note over User,DB: Scenario 2: Explainable AI (XAI) Analysis
+        
+        User->>UI: 17. Click "Get XAI" for a career
+        UI->>Proxy: 18. POST /xai_explanations/{role}<br/>{28 features, role}
+        
+        Proxy->>API: 19. Forward to XAI service
+        API->>FE: 20. Preprocess user features
+        
+        FE->>XAI: 21. Initialize SHAP explainer<br/>with model & background data
+        XAI->>XAI: 22. Calculate SHAP values<br/>for the specific role
+        XAI->>XAI: 23. Identify top influencing<br/>features (+ve/-ve)
+        XAI->>XAI: 24. Generate SHAP plot<br/>(waterfall/force plot)
+        
+        XAI->>DB: 25. Save visualization to<br/>/static folder
+        XAI-->>API: 26. Return explanation:<br/>- Top factors<br/>- Impact values<br/>- Plot URL
+        
+        API-->>Proxy: 27. JSON response
+        Proxy-->>UI: 28. Forward response
+        
+        UI->>UI: 29. Display SHAP visualization
+        UI->>UI: 30. Show top influencing factors<br/>with interpretations
+    end
+
+    %% === SCENARIO 3: Career Roadmap ===
+    rect rgb(240, 255, 240)
+        Note over User,DB: Scenario 3: Career Roadmap Generation
+        
+        User->>UI: 31. Click "Roadmap" for a career
+        UI->>Proxy: 32. GET /career_roadmap/{role}
+        
+        Proxy->>API: 33. Forward request
+        API->>RG: 34. Generate roadmap for role
+        
+        RG->>RG: 35. Query knowledge base<br/>for role requirements
+        RG->>RG: 36. Compile skills list
+        RG->>RG: 37. Compile certifications
+        RG->>RG: 38. Compile project ideas
+        
+        RG-->>API: 39. Return structured roadmap:<br/>- Skills []<br/>- Certifications []<br/>- Projects []
+        
+        API-->>Proxy: 40. JSON response
+        Proxy-->>UI: 41. Forward response
+        
+        UI->>UI: 42. Display roadmap with<br/>organized sections
+    end
+
+    %% === SCENARIO 4: Career Evolution ===
+    rect rgb(255, 240, 245)
+        Note over User,DB: Scenario 4: Career Evolution Prediction (AI-Powered)
+        
+        User->>UI: 43. Click "Career Evolution" button
+        UI->>Proxy: 44. POST /predict_career_evolution<br/>{28 features, current_role}
+        
+        Proxy->>API: 45. Forward request
+        API->>FE: 46. Preprocess user profile
+        
+        FE->>ML: 47. Load Transformer model<br/>(Multi-Head Attention)
+        ML->>ML: 48. Encode current role
+        ML->>ML: 49. Apply attention mechanism<br/>with user features
+        ML->>ML: 50. Predict next 3 career stages
+        
+        ML->>ML: 51. Load time prediction model
+        ML->>ML: 52. Calculate personalized<br/>timeframes based on profile
+        ML->>ML: 53. Compute confidence scores
+        
+        alt Transformer Success
+            ML-->>API: 54a. Return evolution path:<br/>- Current role<br/>- 3 future stages<br/>- Timeframes<br/>- Confidence
+        else Transformer Fails
+            ML->>ML: 54b. Fallback to LSTM model
+            ML-->>API: 54c. Return LSTM predictions
+        end
+        
+        API-->>Proxy: 55. JSON response
+        Proxy-->>UI: 56. Forward response
+        
+        UI->>UI: 57. Display career trajectory<br/>with timeline visualization
+        UI->>UI: 58. Show stage transitions<br/>with timeframes
+    end
+
+    %% === SCENARIO 5: Resume Analysis ===
+    rect rgb(245, 240, 255)
+        Note over User,DB: Scenario 5: Resume Upload & Analysis (NLP-Based)
+        
+        User->>UI: 59. Upload resume file<br/>(PDF/DOCX/TXT)
+        User->>UI: 60. Select target career role
+        
+        UI->>Proxy: 61. POST /upload_resume<br/>{file, multipart/form-data}
+        
+        Proxy->>API: 62. Forward file
+        API->>RP: 63. Extract text from file<br/>(PDF/DOCX parser)
+        
+        RP->>RP: 64. Apply spaCy NLP pipeline
+        RP->>RP: 65. Extract entities:<br/>- Name (PERSON)<br/>- Email (regex)<br/>- Phone (regex)
+        RP->>RP: 66. Extract skills<br/>(keyword matching)
+        RP->>RP: 67. Extract education<br/>(pattern recognition)
+        RP->>RP: 68. Extract experience<br/>(section parsing)
+        
+        RP-->>API: 69. Return parsed data:<br/>- Personal info<br/>- Skills []<br/>- Education []<br/>- Experience []
+        
+        API-->>Proxy: 70. JSON response
+        Proxy-->>UI: 71. Forward response
+        
+        UI->>UI: 72. Display parsed resume data
+        
+        User->>UI: 73. Request gap analysis
+        UI->>Proxy: 74. POST /compare_resume_with_roadmap<br/>{file, target_role}
+        
+        Proxy->>API: 75. Forward request
+        API->>RP: 76. Parse resume (repeat steps 63-69)
+        API->>RG: 77. Get roadmap for target role
+        
+        API->>API: 78. Compare resume skills<br/>with roadmap requirements
+        API->>API: 79. Calculate match score (0-100)
+        API->>API: 80. Identify missing skills
+        API->>API: 81. Generate recommendations
+        
+        API-->>Proxy: 82. Return gap analysis:<br/>- Match score<br/>- Matched skills<br/>- Missing skills<br/>- Recommendations
+        
+        Proxy-->>UI: 83. Forward response
+        UI->>UI: 84. Display skill gap analysis<br/>with visual progress bars
+    end
+
+    %% === SCENARIO 6: Advanced Resume Analysis (SBERT) ===
+    rect rgb(255, 250, 240)
+        Note over User,DB: Scenario 6: Advanced Resume Analysis (SBERT Embeddings)
+        
+        User->>UI: 85. Request advanced analysis
+        UI->>Proxy: 86. POST /api/analyze_resume<br/>{file, target_career, job_desc}
+        
+        Proxy->>API: 87. Forward request
+        API->>RP: 88. Parse resume with NLP
+        
+        RP->>RP: 89. Generate SBERT embeddings<br/>for resume sections
+        RP->>RP: 90. Generate SBERT embeddings<br/>for job requirements
+        RP->>RP: 91. Calculate cosine similarity<br/>(semantic matching)
+        
+        RP->>RP: 92. Analyze keyword coverage
+        RP->>RP: 93. Score sections:<br/>- Skills<br/>- Experience<br/>- Projects<br/>- Education
+        RP->>RP: 94. Generate actionable feedback
+        
+        RP-->>API: 95. Return advanced analysis:<br/>- Career fit score (0-100)<br/>- Keyword coverage %<br/>- Section scores<br/>- Missing keywords<br/>- Feedback
+        
+        API-->>Proxy: 96. JSON response
+        Proxy-->>UI: 97. Forward response
+        
+        UI->>UI: 98. Display comprehensive<br/>analysis dashboard
+        
+        opt Generate PDF Report
+            User->>UI: 99. Request PDF report
+            UI->>Proxy: 100. POST /api/analyze_resume/download_report
+            
+            Proxy->>API: 101. Forward request
+            API->>RP: 102. Generate PDF with<br/>analysis results
+            
+            RP-->>API: 103. Return PDF bytes
+            API-->>Proxy: 104. PDF file stream
+            Proxy-->>UI: 105. Forward PDF
+            
+            UI->>User: 106. Download PDF report
+        end
+    end
+
+    %% === SCENARIO 7: Role Comparison ===
+    rect rgb(250, 255, 250)
+        Note over User,DB: Scenario 7: Compare Multiple Roles (XAI)
+        
+        User->>UI: 107. Select 2-3 careers for comparison
+        User->>UI: 108. Click "Compare Selected"
+        
+        UI->>Proxy: 109. POST /xai_compare_roles<br/>{features, role_a, role_b}
+        
+        Proxy->>API: 110. Forward request
+        API->>XAI: 111. Calculate SHAP for role A
+        API->>XAI: 112. Calculate SHAP for role B
+        
+        XAI->>XAI: 113. Compare feature importance<br/>between roles
+        XAI->>XAI: 114. Identify key differences
+        XAI->>XAI: 115. Generate comparison insights
+        
+        XAI-->>API: 116. Return comparison:<br/>- Role A top factors<br/>- Role B top factors<br/>- Differences<br/>- Similarities
+        
+        API-->>Proxy: 117. JSON response
+        Proxy-->>UI: 118. Forward response
+        
+        UI->>UI: 119. Display side-by-side<br/>comparison table
+        UI->>UI: 120. Highlight key differences<br/>in feature importance
+    end
+
+    %% === SCENARIO 8: Model Introspection ===
+    rect rgb(255, 255, 240)
+        Note over User,DB: Scenario 8: Model Architecture Visualization
+        
+        User->>UI: 121. Request model details
+        UI->>Proxy: 122. GET /model_architecture
+        
+        Proxy->>API: 123. Forward request
+        API->>ML: 124. Extract model layers
+        ML->>ML: 125. Get layer configurations
+        ML->>ML: 126. Count parameters
+        
+        ML-->>API: 127. Return architecture:<br/>- Layer details<br/>- Parameters<br/>- Shapes
+        
+        API-->>Proxy: 128. JSON response
+        Proxy-->>UI: 129. Forward response
+        
+        UI->>Proxy: 130. GET /model_architecture/visualization
+        Proxy->>API: 131. Forward request
+        
+        API->>ML: 132. Generate architecture plot
+        ML->>DB: 133. Save plot to /static
+        ML-->>API: 134. Return plot URL
+        
+        API-->>Proxy: 135. JSON response
+        Proxy-->>UI: 136. Forward response
+        
+        UI->>UI: 137. Display model diagram<br/>and architecture details
+    end
+
+    Note over User,DB: System supports 28 input features including:<br/>Academic percentages, skills ratings, preferences,<br/>and career goals for personalized predictions
