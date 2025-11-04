@@ -1,3 +1,28 @@
+flowchart TD
+    %% Resume Analysis NLP Pipeline - Balanced Flowchart
+    
+    Start([Upload Resume]) --> Extract["Text Extraction<br/>PDF: PyMuPDF / DOCX: python-docx"]
+    
+    Extract --> NLP["spaCy Processing<br/>Tokenize + NER<br/>Skills/Entities"]
+    
+    NLP --> Embed["SBERT Embedding<br/>all-MiniLM-L6-v2<br/>384-d vector"]
+    
+    Embed --> Match["Career Matching<br/>Cosine similarity<br/>Compare to profiles"]
+    
+    Match --> Gap["Skill Gap Analysis<br/>Required vs present<br/>Missing skills"]
+    
+    Gap --> Report["Generate Report<br/>Match % + recommendations"]
+    
+    Report --> End([Return Analysis])
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Extract fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style NLP fill:#fed7aa,stroke:#f97316,stroke-width:3px
+    style Embed fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style Match fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Gap fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Report fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
 flowchart LR
     %% Resume Analysis - Simple
     

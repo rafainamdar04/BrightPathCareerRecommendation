@@ -1,3 +1,28 @@
+flowchart TD
+    %% XAI Explanation Flow - Balanced Flowchart
+    
+    Start([Request Explanation]) --> Load["Load Resources<br/>Model + user input<br/>Background data"]
+    
+    Load --> Compute["Compute SHAP Values<br/>TreeExplainer<br/>Per-feature contributions"]
+    
+    Compute --> Rank["Rank Features<br/>Top contributors<br/>Positive/negative impact"]
+    
+    Rank --> Visualize["Generate Visualization<br/>Force plot / bar chart<br/>Save to static/"]
+    
+    Visualize --> Explain["Natural Language Summary<br/>Why this career fits<br/>Confidence level"]
+    
+    Explain --> Return["Format Response<br/>Values + image URL"]
+    
+    Return --> End([Return to User])
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Load fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Compute fill:#fed7aa,stroke:#f97316,stroke-width:3px
+    style Rank fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Visualize fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Explain fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Return fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
 flowchart LR
     %% XAI Explanation - Simple
     

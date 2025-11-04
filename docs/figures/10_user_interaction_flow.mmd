@@ -1,3 +1,27 @@
+sequenceDiagram
+    title User Interaction Flow (Balanced)
+    actor User
+    participant FE as Frontend (React)
+    participant API as Backend (FastAPI)
+    participant SVC as Services (MLP/Transformer/NLP/XAI)
+
+    User->>FE: Fill form and submit
+    FE->>API: POST /predict
+    API->>SVC: Run MLP inference
+    SVC-->>API: Top 3 careers + scores
+    API-->>FE: Results
+
+    User->>FE: Request explanation
+    FE->>API: GET /xai
+    API->>SVC: Compute SHAP
+    SVC-->>API: Explanation + plot
+    API-->>FE: Explanation
+
+    User->>FE: Upload resume (optional)
+    FE->>API: POST /resume/analyze
+    API->>SVC: Extract + Embed + Compare
+    SVC-->>API: Skill gap report
+    API-->>FE: Analysis
 flowchart LR
     %% User Interaction - Simple
     

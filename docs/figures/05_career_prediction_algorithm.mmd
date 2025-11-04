@@ -1,3 +1,25 @@
+flowchart TD
+    %% Career Prediction Algorithm - Balanced Flowchart
+    
+    Start([User Submits Form]) --> Validate["Validate Input<br/>28 required fields"]
+    
+    Validate --> Preprocess["Feature Engineering<br/>One-hot encode (14 categorical)<br/>Standard scale (14 numerical)"]
+    
+    Preprocess --> Model["MLP Neural Network<br/>Architecture: 192→96→48→34<br/>ReLU + Softmax"]
+    
+    Model --> Rank["Rank Predictions<br/>Sort by probability<br/>Select top 3 careers"]
+    
+    Rank --> Output["Return Results<br/>Career names<br/>Confidence scores<br/>Probabilities"]
+    
+    Output --> End([Display to User])
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Validate fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Preprocess fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Model fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
+    style Rank fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Output fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
 flowchart LR
     %% Career Prediction Algorithm - Simple
     

@@ -1,3 +1,28 @@
+flowchart TD
+    %% Career Evolution Algorithm - Balanced Flowchart
+    
+    Start([Request Career Path]) --> Input["Collect Data<br/>User profile<br/>Current role<br/>Career history"]
+    
+    Input --> Embed["Embedding Layer<br/>Convert roles to vectors<br/>Add positional encoding"]
+    
+    Embed --> Transformer["Transformer Model<br/>Multi-head attention (4 heads)<br/>Cross-attention with profile<br/>Learn career patterns"]
+    
+    Transformer --> Predict["Predict Evolution<br/>Next 3 career stages<br/>Transition probabilities"]
+    
+    Predict --> Timeline["Estimate Timeline<br/>Years per stage<br/>Conditioned on profile"]
+    
+    Timeline --> Output["Format Path<br/>Stage 1 → Stage 2 → Stage 3<br/>Years and confidence"]
+    
+    Output --> End([Return Evolution Path])
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Input fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Embed fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style Transformer fill:#c4b5fd,stroke:#8b5cf6,stroke-width:3px
+    style Predict fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style Timeline fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style Output fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
 flowchart LR
     %% Career Evolution - Simple
     
