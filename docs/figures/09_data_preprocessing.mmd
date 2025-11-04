@@ -1,54 +1,23 @@
 flowchart TD
-    %% Data Preprocessing Pipeline - Detailed Feature Engineering
+    %% Data Preprocessing Pipeline - Simplified
     
-    Start([Raw Dataset]) --> Load["Load CSV<br/>data/roo.csv<br/>20,000 samples<br/>29 columns total"]
+    Start([Raw Dataset]) --> Load["Load CSV<br/>20,000 samples<br/>28 features + target"]
     
-    Load --> Inspect["Data Inspection<br/>• Check missing values<br/>• Identify data types<br/>• Class distribution"]
+    Load --> Split_Types["Split Feature Types<br/>14 Numerical<br/>14 Categorical"]
     
-    Inspect --> Separate["Separate Features<br/>X: 28 feature columns<br/>y: 'Suggested Job Role'"]
+    Split_Types --> Process_Num["Process Numerical<br/>Standard scaling<br/>z = (x - μ) / σ"]
+    Split_Types --> Process_Cat["Process Categorical<br/>One-hot encoding<br/>63 dimensions"]
     
-    Separate --> TypeSplit["Feature Type Split"]
+    Process_Num --> Combine["Combine Features<br/>Total: 77 dimensions"]
+    Process_Cat --> Combine
     
-    TypeSplit --> Numerical["Numerical Features (14)<br/>• Academic percentages (8)<br/>• Hours working per day<br/>• Logical quotient rating<br/>• Hackathons count<br/>• Coding skills rating<br/>• Public speaking points"]
+    Combine --> Balance["Balance Classes<br/>Random oversampling<br/>20k → 37,808 samples"]
     
-    TypeSplit --> Categorical["Categorical Features (14)<br/>• Can work long time?<br/>• Self-learning capability<br/>• Extra courses<br/>• Certifications<br/>• Workshops<br/>• Reading/writing skills<br/>• Memory capability<br/>• Interested subjects<br/>• Career area interest<br/>• Job/Higher Studies<br/>• Company type preference<br/>• Management/Technical<br/>• Hard/smart worker<br/>• Worked in teams"]
+    Balance --> Split["Train-Test Split<br/>80% train (30,246)<br/>20% test (7,562)<br/>Stratified"]
     
-    Numerical --> ScaleCheck{Missing<br/>Values?}
-    ScaleCheck -->|Yes| Impute["Impute Missing<br/>Strategy: mean/median"]
-    ScaleCheck -->|No| Scale
-    Impute --> Scale["Standard Scaling<br/>Formula: z = (x - μ) / σ<br/>Result: mean=0, std=1"]
+    Split --> Save["Save Artifacts<br/>Scalers, encoders<br/>Feature names"]
     
-    Categorical --> EncodeCheck{Unknown<br/>Categories?}
-    EncodeCheck -->|Handle| OneHot["One-Hot Encoding<br/>handle_unknown='ignore'<br/>sparse_output=False<br/>Output: 63 binary columns"]
-    
-    Scale --> Scaled["Scaled Numerical<br/>14 columns<br/>Normalized values"]
-    OneHot --> Encoded["Encoded Categorical<br/>63 binary columns"]
-    
-    Scaled --> Concat["Concatenate Features<br/>np.hstack([X_num, X_cat])<br/>Final: 77 dimensions"]
-    Encoded --> Concat
-    
-    Concat --> Target["Prepare Target<br/>34 unique career classes<br/>String labels"]
-    
-    Target --> CheckBalance["Check Class Balance"]
-    
-    CheckBalance --> Imbalance{Severe<br/>Imbalance?}
-    
-    Imbalance -->|Yes| Oversample["Random Oversampling<br/>Strategy: balance all classes<br/>SMOTE-like approach<br/>random_state=42"]
-    Imbalance -->|No| Split
-    
-    Oversample --> Balanced["Balanced Dataset<br/>37,808 samples<br/>Equal class distribution"]
-    
-    Balanced --> Split["Train-Test Split<br/>test_size=0.2<br/>random_state=42<br/>stratify=y (maintain distribution)"]
-    
-    Split --> TrainSet["Training Set<br/>30,246 samples (80%)<br/>77 features"]
-    Split --> TestSet["Test Set<br/>7,562 samples (20%)<br/>77 features"]
-    
-    TrainSet --> SaveArtifacts["Save Preprocessing Artifacts<br/>• StandardScaler object<br/>• OneHotEncoder object<br/>• Feature names<br/>• Label mappings"]
-    TestSet --> SaveArtifacts
-    
-    SaveArtifacts --> Ready["Ready for Training"]
-    
-    Ready --> End([Preprocessed Data])
+    Save --> End([Ready for Training])
     
     style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
     style Load fill:#dbeafe,stroke:#3b82f6,stroke-width:2px

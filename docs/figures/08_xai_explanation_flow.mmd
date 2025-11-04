@@ -1,40 +1,22 @@
 flowchart TD
-    %% XAI (SHAP) Explanation Generation Flow
+    %% XAI (SHAP) Explanation Generation Flow - Simplified
     
-    Start([User Requests Explanation]) --> Input["Input Data<br/>• User profile<br/>• Predicted career<br/>• Model output"]
+    Start([User Requests Explanation]) --> Load["Load Model & Data<br/>career_model.pkl<br/>Background dataset"]
     
-    Input --> LoadModel["Load Model & Data<br/>• career_model.pkl<br/>• Feature encoders<br/>• Background dataset"]
+    Load --> Compute["Compute SHAP Values<br/>TreeExplainer / KernelExplainer<br/>Calculate feature contributions"]
     
-    LoadModel --> SelectExplainer{Choose Explainer}
+    Compute --> Rank["Rank Features<br/>Sort by importance<br/>Identify top 10"]
     
-    SelectExplainer -->|Tree-based| TreeExp["TreeExplainer<br/>Fast exact computation<br/>100-1000x faster<br/>For MLP as tree proxy"]
-    SelectExplainer -->|Model-agnostic| KernelExp["KernelExplainer<br/>Sample 2000+ coalitions<br/>Weighted regression<br/>Fallback method"]
+    Rank --> Visualize["Generate Visualization<br/>SHAP force plot<br/>Save to backend/static/"]
     
-    TreeExp --> ComputeSHAP["Compute SHAP Values<br/>Shapley value formula:<br/>φᵢ = Σ contribution<br/>across all coalitions"]
-    KernelExp --> ComputeSHAP
+    Visualize --> Explain["Natural Language Explanation<br/>Convert SHAP to readable text<br/>Calculate confidence level"]
     
-    ComputeSHAP --> BaseValue["Calculate Base Value<br/>Average model output<br/>across background data"]
+    Explain --> Counterfactual{User wants<br/>what-if analysis?}
     
-    BaseValue --> Attribution["Feature Attribution<br/>• Positive SHAP → increases prob<br/>• Negative SHAP → decreases prob<br/>• Magnitude → importance"]
-    
-    Attribution --> RankFeatures["Rank Features<br/>Sort by |SHAP value|<br/>Top 10 most important"]
-    
-    RankFeatures --> GenViz["Generate Visualizations<br/>• Force plot (single)<br/>• Waterfall plot<br/>• Bar plot (mean)"]
-    
-    GenViz --> SavePlot["Save Plot<br/>backend/static/<br/>shap_explanation.png<br/>Base64 encoding"]
-    
-    SavePlot --> NLG["Natural Language Generation<br/>Convert SHAP to text:<br/>'Your strength in [feature]<br/>contributes X% to this role'"]
-    
-    NLG --> Confidence["Calculate Confidence<br/>Prediction probability<br/>Very High (>80%)<br/>High (60-80%)<br/>Moderate (40-60%)"]
-    
-    Confidence --> Counterfactual{Generate<br/>Counterfactual?}
-    
-    Counterfactual -->|Yes| WhatIf["What-If Analysis<br/>SHAP difference:<br/>target - current<br/>Top 3 changes needed"]
+    Counterfactual -->|Yes| WhatIf["Generate Suggestions<br/>What to change<br/>Priority ranking"]
     Counterfactual -->|No| Format
     
-    WhatIf --> Actionable["Actionable Advice<br/>'Increase X by Y points'<br/>'Add certification Z'<br/>Priority ranking"]
-    
-    Actionable --> Format["Format Response<br/>• SHAP values (JSON)<br/>• Plot URL/Base64<br/>• Text insights<br/>• Counterfactuals"]
+    WhatIf --> Format["Format Response<br/>SHAP values, plot, insights"]
     
     Format --> End([Return XAI Response])
     

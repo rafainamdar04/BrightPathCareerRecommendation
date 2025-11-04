@@ -1,78 +1,32 @@
 flowchart TD
-    %% Complete User Interaction Flow
+    %% User Interaction Flow - Simplified
     
-    Start([User Visits Website]) --> Landing["Landing Page<br/>Hero section<br/>Feature overview<br/>Call-to-action"]
+    Start([User Visits Website]) --> Landing["Landing Page<br/>Overview and CTA"]
     
-    Landing --> Choice{User Action}
+    Landing --> Form["Fill Career Form<br/>28 fields: academics,<br/>skills, preferences"]
     
-    Choice -->|Start Prediction| FormNav["Navigate to<br/>Career Prediction Form"]
-    Choice -->|Learn More| Explore["Explore Features<br/>Read documentation"]
+    Form --> Submit["Submit for Prediction"]
     
-    Explore --> Choice
+    Submit --> Results["View Top 3 Careers<br/>Confidence scores<br/>Descriptions"]
     
-    FormNav --> Form["Fill Career Form<br/>28 input fields:<br/>• Academic scores (8)<br/>• Skills & ratings (6)<br/>• Preferences (14)"]
+    Results --> Options{Choose Action}
     
-    Form --> Validate{Form Valid?}
+    Options -->|Explain| XAI["View XAI Explanation<br/>SHAP feature importance<br/>Why this career?"]
     
-    Validate -->|No| ShowError["Show Validation Errors<br/>Highlight required fields<br/>Format guidance"]
-    ShowError --> Form
+    Options -->|Evolution| Evolution["View Career Path<br/>Future progression<br/>Timeframes"]
     
-    Validate -->|Yes| Submit["Submit Form<br/>POST /predict_top3_careers"]
+    Options -->|Resume| Resume["Upload Resume<br/>Skill gap analysis<br/>Match percentage"]
     
-    Submit --> Loading["Loading State<br/>Show spinner<br/>Disable form"]
+    Options -->|Compare| Compare["Compare Careers<br/>Side-by-side view<br/>Requirements"]
     
-    Loading --> APICall["Backend Processing<br/>Feature engineering<br/>MLP inference<br/>Top-3 ranking"]
+    Options -->|New| Form
     
-    APICall --> Results["Display Top 3 Careers<br/>• Career names<br/>• Confidence scores<br/>• Probability %<br/>• Brief descriptions"]
+    XAI --> Options
+    Evolution --> Options
+    Resume --> Options
+    Compare --> Options
     
-    Results --> UserDecision{What Next?}
-    
-    UserDecision -->|View XAI| XAIRequest["Request Explanation<br/>POST /xai_explanations/{role}<br/>Select specific career"]
-    
-    UserDecision -->|Career Evolution| EvolutionRequest["Request Evolution Path<br/>POST /predict_career_evolution<br/>Use predicted role"]
-    
-    UserDecision -->|Upload Resume| ResumeNav["Navigate to<br/>Resume Analysis"]
-    
-    UserDecision -->|Compare Careers| Compare["Compare Feature<br/>Side-by-side view<br/>Skill requirements"]
-    
-    UserDecision -->|New Prediction| FormNav
-    
-    XAIRequest --> XAIProcess["Generate SHAP<br/>Feature importance<br/>Visualization"]
-    
-    XAIProcess --> XAIDisplay["Display XAI Results<br/>• SHAP plot<br/>• Top 10 features<br/>• Text insights<br/>• Counterfactuals"]
-    
-    XAIDisplay --> UserDecision
-    
-    EvolutionRequest --> TransformerProcess["Transformer Inference<br/>Multi-head attention<br/>Career path prediction"]
-    
-    TransformerProcess --> EvolutionDisplay["Display Evolution Path<br/>• Current → Stage 1 → Stage 2 → Stage 3<br/>• Timeframes (years)<br/>• Confidence per stage<br/>• Timeline visualization"]
-    
-    EvolutionDisplay --> UserDecision
-    
-    ResumeNav --> ResumeUpload["Upload Resume<br/>Supported: PDF, DOCX<br/>Max size validation"]
-    
-    ResumeUpload --> ResumeCheck{Valid File?}
-    
-    ResumeCheck -->|No| ResumeError["Show Error<br/>Format/size issues"]
-    ResumeError --> ResumeUpload
-    
-    ResumeCheck -->|Yes| ResumeProcess["Process Resume<br/>spaCy NLP<br/>SBERT embedding<br/>Skill extraction"]
-    
-    ResumeProcess --> ResumeResults["Display Analysis<br/>• Extracted info<br/>• Skills found<br/>• Skill gaps<br/>• Career match %<br/>• Recommendations"]
-    
-    ResumeResults --> UserDecision
-    
-    Compare --> CompareView["Comparison View<br/>Feature matrix<br/>Requirements vs Profile<br/>Gap analysis"]
-    
-    CompareView --> UserDecision
-    
-    UserDecision -->|Track Progress| Progress["Progress Tracking<br/>Save predictions<br/>Track evolution<br/>Export reports"]
-    
-    Progress --> UserDecision
-    
-    UserDecision -->|Exit| Feedback["Optional Feedback<br/>Rate experience<br/>Comments<br/>Would recommend?"]
-    
-    Feedback --> End([Session Complete])
+    Options -->|Exit| End([Session Complete])
     
     style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
     style Landing fill:#dbeafe,stroke:#3b82f6,stroke-width:2px

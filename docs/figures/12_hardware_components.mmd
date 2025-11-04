@@ -1,104 +1,48 @@
-graph TB
-    %% Hardware Component Specifications
+graph LR
+    %% Hardware Component Specifications - Simplified
     
-    subgraph Dev["Development Environment"]
-        DevHW["Development Machine"]
+    subgraph Dev["Development Machine (Current)"]
+        D1["CPU: Intel i5/i7<br/>4-8 cores, 2.5-3.5 GHz"]
+        D2["RAM: 16-32 GB DDR4<br/>Training + Inference"]
+        D3["Storage: 256-512 GB SSD<br/>OS, code, models"]
+        D4["GPU: Optional<br/>NVIDIA GTX/RTX<br/>6-8 GB VRAM"]
         
-        subgraph DevCPU["CPU Specifications"]
-            CPU1["Processor: Intel Core i5/i7 or AMD Ryzen 5/7<br/>Cores: 4-8 cores<br/>Base Clock: 2.5-3.5 GHz<br/>Turbo: Up to 4.5 GHz"]
-            style CPU1 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
-        end
-        
-        subgraph DevRAM["Memory (RAM)"]
-            RAM1["Capacity: 16-32 GB DDR4<br/>Speed: 2666-3200 MHz<br/>Type: Dual Channel<br/>Usage: Training (8-12 GB)<br/>       Inference (2-4 GB)"]
-            style RAM1 fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-        end
-        
-        subgraph DevStorage["Storage"]
-            SSD1["Primary: 256-512 GB SSD<br/>Type: NVMe M.2<br/>Read: 3000+ MB/s<br/>Write: 2000+ MB/s<br/>Usage: OS, Code, Models"]
-            HDD1["Secondary: 1-2 TB HDD (Optional)<br/>Type: 7200 RPM<br/>Usage: Datasets, Logs"]
-            style SSD1 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-            style HDD1 fill:#fed7aa,stroke:#f97316,stroke-width:2px
-        end
-        
-        subgraph DevGPU["GPU (Optional)"]
-            GPU1["Graphics: NVIDIA GTX 1660/RTX 3060<br/>VRAM: 6-8 GB GDDR6<br/>CUDA Cores: 1408-3584<br/>Usage: Faster training (5-10x)<br/>Status: Optional for this project"]
-            style GPU1 fill:#ffffff,stroke:#94a3b8,stroke-width:2px,stroke-dasharray: 5 5
-        end
+        style D1 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+        style D2 fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+        style D3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+        style D4 fill:#ffffff,stroke:#94a3b8,stroke-width:2px,stroke-dasharray: 5 5
     end
     
-    subgraph Client["Client Environment"]
-        ClientHW["User Device"]
+    subgraph Client["Client Device"]
+        C1["Minimum:<br/>Dual-core CPU, 4GB RAM<br/>Browser, 5 Mbps internet"]
+        C2["Recommended:<br/>Quad-core CPU, 8GB RAM<br/>Latest browser, 10+ Mbps"]
         
-        subgraph ClientMin["Minimum Requirements"]
-            CMIN["CPU: Dual-core 2.0 GHz+<br/>RAM: 4 GB<br/>Browser: Chrome 90+, Edge 90+<br/>Screen: 1366x768<br/>Internet: 5 Mbps"]
-            style CMIN fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
-        end
-        
-        subgraph ClientRec["Recommended"]
-            CREC["CPU: Quad-core 2.5 GHz+<br/>RAM: 8 GB<br/>Browser: Latest Chrome/Edge<br/>Screen: 1920x1080<br/>Internet: 10+ Mbps"]
-            style CREC fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-        end
+        style C1 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+        style C2 fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     end
     
-    subgraph ProdPlanned["Production Server (Planned)"]
-        ProdHW["Cloud Server"]
+    subgraph Prod["Cloud Server (Planned)"]
+        P1["CPU: 4-8 vCPUs<br/>AWS/Azure/GCP"]
+        P2["RAM: 16-32 GB<br/>ECC memory"]
+        P3["Storage: 100-200 GB SSD<br/>+ Object storage"]
+        P4["Network: 1-5 Gbps<br/>Load balancer, SSL/TLS"]
+        P5["Database: PostgreSQL/MySQL<br/>20-50 GB"]
         
-        subgraph ProdCPU["CPU Specifications"]
-            PCPU["vCPUs: 4-8 cores<br/>Type: Intel Xeon or AMD EPYC<br/>Clock: 2.5+ GHz<br/>Platform: AWS EC2 / Azure VM / GCP Compute"]
-            style PCPU fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
-        end
-        
-        subgraph ProdRAM["Memory"]
-            PRAM["Capacity: 16-32 GB<br/>Type: ECC RAM<br/>Usage: Model serving (8-12 GB)<br/>       OS + Services (4-8 GB)<br/>       Cache (2-4 GB)"]
-            style PRAM fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
-        end
-        
-        subgraph ProdStorage["Storage"]
-            PSSD["Primary: 100-200 GB SSD<br/>Type: Premium SSD / gp3<br/>IOPS: 3000-5000<br/>Usage: OS, Models, Assets"]
-            PObjStore["Object Storage: 50-100 GB<br/>Type: S3 / Azure Blob / GCS<br/>Usage: Model artifacts, SHAP plots"]
-            style PSSD fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
-            style PObjStore fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
-        end
-        
-        subgraph ProdNet["Network"]
-            PNET["Bandwidth: 1-5 Gbps<br/>Load Balancer: Application LB<br/>CDN: CloudFront / Azure CDN<br/>SSL/TLS: Certificate managed"]
-            style PNET fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
-        end
-        
-        subgraph ProdDB["Database (Planned)"]
-            PDB["Type: PostgreSQL / MySQL<br/>Capacity: 20-50 GB<br/>Instance: t3.medium / B2s<br/>Backup: Automated daily<br/>Usage: User data, feedback, logs"]
-            style PDB fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
-        end
+        style P1 fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
+        style P2 fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
+        style P3 fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
+        style P4 fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
+        style P5 fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
     end
     
-    subgraph Network["Network Architecture"]
-        NET["Local Development: localhost<br/>Port 8000: Backend (FastAPI)<br/>Port 5173: Frontend (Vite)<br/>Protocol: HTTP<br/><br/>Production (Planned):<br/>HTTPS with TLS 1.3<br/>Domain with DNS<br/>WebSocket support"]
-        style NET fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
-    end
-    
-    DevHW --- DevCPU
-    DevHW --- DevRAM
-    DevHW --- DevStorage
-    DevHW --- DevGPU
-    
-    ClientHW --- ClientMin
-    ClientHW --- ClientRec
-    
-    ProdHW --- ProdCPU
-    ProdHW --- ProdRAM
-    ProdHW --- ProdStorage
-    ProdHW --- ProdNet
-    ProdHW --- ProdDB
-    
-    ClientHW -.-> NET
-    DevHW --- NET
-    ProdHW -.-> NET
+    Client --> Network["Network Layer<br/>localhost (dev)<br/>HTTPS (prod planned)"]
+    Dev --> Network
+    Prod -.-> Network
     
     style Dev fill:#f0fdf4,stroke:#16a34a,stroke-width:3px
     style Client fill:#eff6ff,stroke:#2563eb,stroke-width:3px
-    style ProdPlanned fill:#f8fafc,stroke:#94a3b8,stroke-width:3px,stroke-dasharray: 5 5
-    style Network fill:#faf5ff,stroke:#9333ea,stroke-width:3px
+    style Prod fill:#f8fafc,stroke:#94a3b8,stroke-width:3px,stroke-dasharray: 5 5
+    style Network fill:#faf5ff,stroke:#9333ea,stroke-width:2px
     
-    Legend["Legend:<br/>Solid = Current/Active<br/>Dashed = Planned/Optional"]
+    Legend["Legend: Solid = Current | Dashed = Planned"]
     style Legend fill:#fafafa,stroke:#e5e7eb,stroke-width:1px
