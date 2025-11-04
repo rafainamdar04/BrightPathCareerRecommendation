@@ -404,21 +404,21 @@ flowchart TD
     Start([Start]) --> Landing[Open App]
     Landing --> Form[Complete Form<br/>Scores, skills, preferences]
     Form --> Submit[Submit for Analysis]
-    Submit --> Predict[/Call API: POST /predict/]
+    Submit --> Predict["Call API: POST /predict"]
     Predict --> Results[Display Top 3 Careers<br/>Names + confidence]
     
     Results --> Choice{Next Action?}
     
     Choice -->|Explain| XAI[Request XAI Explanation]
-    XAI --> XAICompute[/GET /xai/ (SHAP)/]
+    XAI --> XAICompute["GET /xai (SHAP)"]
     XAICompute --> XAIShow[Show explanation<br/>Feature importance]
     
     Choice -->|Evolution| Evo[View Career Evolution]
-    Evo --> EvoCompute[/GET /evolution/]
+    Evo --> EvoCompute["GET /evolution"]
     EvoCompute --> EvoShow[Show path + timeline]
     
     Choice -->|Resume| Resume[Upload Resume]
-    Resume --> ResumeCompute[/POST /resume/analyze/]
+    Resume --> ResumeCompute["POST /resume/analyze"]
     ResumeCompute --> ResumeShow[Show skill gap + match]
     
     XAIShow --> Choice
