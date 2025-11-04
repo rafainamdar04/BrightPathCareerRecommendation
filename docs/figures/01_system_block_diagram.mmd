@@ -1,0 +1,60 @@
+graph TB
+    %% BrightPath System Architecture - Block Diagram
+    
+    subgraph Client["Client Layer"]
+        Browser["Web Browser<br/>(Chrome/Edge/Firefox)"]
+        style Browser fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    end
+    
+    subgraph Frontend["Frontend (React + TypeScript)"]
+        UI["User Interface<br/>Landing, Career Evolution,<br/>Skill Analysis Pages"]
+        Router["React Router<br/>(SPA Navigation)"]
+        style UI fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+        style Router fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    end
+    
+    subgraph Backend["Backend API (FastAPI)"]
+        API["REST API Endpoints<br/>/predict_top3_careers<br/>/predict_career_evolution<br/>/xai_explanations"]
+        style API fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    end
+    
+    subgraph Services["AI/ML Services"]
+        MLP["Career Prediction<br/>(MLP Classifier)"]
+        Transformer["Career Evolution<br/>(Transformer Model)"]
+        XAI["Explainable AI<br/>(SHAP)"]
+        NLP["Resume Parser<br/>(spaCy + SBERT)"]
+        style MLP fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+        style Transformer fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+        style XAI fill:#fed7aa,stroke:#f97316,stroke-width:2px
+        style NLP fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    end
+    
+    subgraph Data["Data Layer"]
+        Dataset["CSV Dataset<br/>(roo.csv)"]
+        Models["ML Models<br/>(.pkl, .h5 files)"]
+        Metrics["Training Metrics<br/>(JSON)"]
+        style Dataset fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+        style Models fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+        style Metrics fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    end
+    
+    Browser --> UI
+    UI --> Router
+    Router --> API
+    
+    API --> MLP
+    API --> Transformer
+    API --> XAI
+    API --> NLP
+    
+    MLP -.-> Dataset
+    MLP -.-> Models
+    Transformer -.-> Models
+    XAI -.-> Metrics
+    NLP -.-> Dataset
+    
+    style Client fill:#f8fafc,stroke:#64748b,stroke-width:3px
+    style Frontend fill:#f0fdf4,stroke:#16a34a,stroke-width:3px
+    style Backend fill:#fefce8,stroke:#ca8a04,stroke-width:3px
+    style Services fill:#faf5ff,stroke:#9333ea,stroke-width:3px
+    style Data fill:#fdf2f8,stroke:#db2777,stroke-width:3px

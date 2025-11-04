@@ -1,0 +1,58 @@
+flowchart TD
+    %% Resume Analysis NLP Pipeline
+    
+    Start([User Uploads Resume]) --> FileCheck{File Type?}
+    
+    FileCheck -->|PDF| ExtractPDF["Extract Text<br/>PyMuPDF (fitz)<br/>Page-by-page extraction"]
+    FileCheck -->|DOCX| ExtractDOCX["Extract Text<br/>python-docx<br/>Paragraph extraction"]
+    FileCheck -->|Other| ErrorType["Unsupported Format<br/>Return Error"]
+    
+    ExtractPDF --> Clean["Clean Text<br/>• Remove extra whitespace<br/>• Normalize characters<br/>• Fix encoding"]
+    ExtractDOCX --> Clean
+    
+    Clean --> SpacyLoad["Load spaCy Model<br/>en_core_web_sm<br/>Pre-trained NLP pipeline"]
+    
+    SpacyLoad --> Tokenize["Tokenization<br/>Split into words<br/>Handle contractions"]
+    
+    Tokenize --> POS["Part-of-Speech Tagging<br/>Identify NOUN, VERB, ADJ<br/>CNN-based tagger"]
+    
+    POS --> NER["Named Entity Recognition<br/>Extract:<br/>• PERSON (name)<br/>• ORG (companies)<br/>• DATE (employment)<br/>• GPE (locations)"]
+    
+    NER --> CustomNER["Custom Entity Extraction<br/>• Education (degrees)<br/>• Skills (technical)<br/>• Certifications<br/>• Tools/frameworks"]
+    
+    CustomNER --> SkillMatch["Skill Taxonomy Matching<br/>• Programming languages (24)<br/>• Frameworks (30+)<br/>• Databases (13)<br/>• Cloud tech (14+)"]
+    
+    SkillMatch --> Experience["Calculate Experience<br/>Regex patterns:<br/>• YYYY-YYYY<br/>• X years<br/>• Present/Current"]
+    
+    Experience --> SBERT["SBERT Embedding<br/>Model: all-MiniLM-L6-v2<br/>Resume → 384-dim vector"]
+    
+    SBERT --> Similarity["Semantic Similarity<br/>Compare with career profiles<br/>Cosine similarity"]
+    
+    Similarity --> GapAnalysis["Skill Gap Analysis<br/>Required vs Present<br/>Missing skills identification"]
+    
+    GapAnalysis --> Score["Calculate Scores<br/>• Overall match<br/>• Technical fit<br/>• Experience match<br/>• Skill coverage"]
+    
+    Score --> Report["Generate Report<br/>• Extracted info<br/>• Skill gaps<br/>• Recommendations<br/>• Match percentage"]
+    
+    Report --> End([Return Analysis])
+    ErrorType --> End
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
+    style FileCheck fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style ExtractPDF fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style ExtractDOCX fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Clean fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
+    style SpacyLoad fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    style Tokenize fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style POS fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style NER fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style CustomNER fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style SkillMatch fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Experience fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style SBERT fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
+    style Similarity fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style GapAnalysis fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Score fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Report fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style ErrorType fill:#fecaca,stroke:#ef4444,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:3px

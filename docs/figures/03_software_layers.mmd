@@ -1,0 +1,64 @@
+graph TD
+    %% Software Architecture - Layered View
+    
+    subgraph Layer1["Presentation Layer"]
+        P1["React Pages<br/>LandingPage, CareerEvolution<br/>SkillGapAnalysis"]
+        P2["Components<br/>EnhancedRoadmapDisplay<br/>ErrorBoundary, Navbar"]
+        P3["State Management<br/>Hooks, Context API"]
+        
+        style P1 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+        style P2 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+        style P3 fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    end
+    
+    subgraph Layer2["API Layer"]
+        A1["FastAPI Routes<br/>POST /predict_top3_careers<br/>POST /predict_career_evolution<br/>POST /xai_explanations"]
+        A2["Request Validation<br/>Pydantic Schemas"]
+        A3["Middleware<br/>CORS, Static Files"]
+        
+        style A1 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+        style A2 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+        style A3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    end
+    
+    subgraph Layer3["Business Logic Layer"]
+        B1["Career Prediction Service<br/>MLPClassifier (71.2% accuracy)"]
+        B2["Career Evolution Service<br/>Transformer with Attention"]
+        B3["XAI Service<br/>SHAP Explanations"]
+        B4["NLP Service<br/>spaCy + SBERT"]
+        
+        style B1 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+        style B2 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+        style B3 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+        style B4 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    end
+    
+    subgraph Layer4["Data Access Layer"]
+        D1["CSV Reader<br/>pandas"]
+        D2["Model Loader<br/>pickle, keras"]
+        D3["File System<br/>Static assets"]
+        
+        style D1 fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+        style D2 fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+        style D3 fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    end
+    
+    P1 --> A1
+    P2 --> A1
+    P3 --> A1
+    
+    A1 --> B1
+    A1 --> B2
+    A1 --> B3
+    A1 --> B4
+    
+    B1 --> D1
+    B1 --> D2
+    B2 --> D2
+    B3 --> D3
+    B4 --> D1
+    
+    style Layer1 fill:#eff6ff,stroke:#2563eb,stroke-width:3px
+    style Layer2 fill:#fffbeb,stroke:#d97706,stroke-width:3px
+    style Layer3 fill:#faf5ff,stroke:#9333ea,stroke-width:3px
+    style Layer4 fill:#fdf2f8,stroke:#db2777,stroke-width:3px

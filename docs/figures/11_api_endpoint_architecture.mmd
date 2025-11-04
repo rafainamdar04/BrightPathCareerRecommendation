@@ -1,0 +1,94 @@
+graph TD
+    %% API Endpoint Architecture
+    
+    subgraph Client["Client Applications"]
+        Web["Web Browser<br/>React SPA"]
+        Mobile["Mobile App<br/>(Future)"]
+        style Web fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+        style Mobile fill:#ffffff,stroke:#94a3b8,stroke-width:2px,stroke-dasharray: 5 5
+    end
+    
+    subgraph Gateway["API Gateway Layer"]
+        CORS["CORS Middleware<br/>allow_origins: *<br/>allow_credentials: True"]
+        Static["Static Files<br/>/static mount<br/>SHAP visualizations"]
+        ErrorHandler["Error Handler<br/>HTTP exceptions<br/>Validation errors"]
+        style CORS fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+        style Static fill:#fed7aa,stroke:#f97316,stroke-width:2px
+        style ErrorHandler fill:#fecaca,stroke:#ef4444,stroke-width:2px
+    end
+    
+    subgraph Endpoints["REST API Endpoints"]
+        E1["POST /predict_top3_careers<br/>Input: CareerInput schema<br/>Output: Top3CareerOutput<br/>Handler: predict_top3()"]
+        E2["POST /predict_career_evolution<br/>Input: CareerInput + current_role<br/>Output: CareerEvolutionOutput<br/>Handler: predict_evolution()"]
+        E3["POST /xai_explanations/{role}<br/>Path: role (string)<br/>Body: CareerInput<br/>Query: generate_visualization<br/>Handler: xai_explanations()"]
+        E4["POST /xai_counterfactual/{target_role}<br/>Path: target_role<br/>Body: CareerInput<br/>Query: max_changes<br/>Handler: xai_counterfactual()"]
+        E5["POST /parse_resume<br/>Input: UploadFile (PDF/DOCX)<br/>Output: ParsedResumeOutput<br/>Handler: parse_resume()"]
+        E6["POST /analyze_resume<br/>Input: Resume + target_career<br/>Output: ResumeAnalysisOutput<br/>Handler: analyze_resume()"]
+        E7["GET /model_architecture<br/>Output: Model structure JSON<br/>Handler: get_model_arch()"]
+        E8["GET /health<br/>Output: System status<br/>Handler: health_check()"]
+        
+        style E1 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+        style E2 fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
+        style E3 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+        style E4 fill:#fcd34d,stroke:#f59e0b,stroke-width:2px
+        style E5 fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+        style E6 fill:#fbb6ce,stroke:#db2777,stroke-width:2px
+        style E7 fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+        style E8 fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    end
+    
+    subgraph Services["Service Layer"]
+        S1["Model Service<br/>predict_career()<br/>predict_top3_careers()"]
+        S2["Evolution Service<br/>predict_evolution_path()<br/>attention_mechanism()"]
+        S3["XAI Service<br/>explain_prediction()<br/>generate_counterfactual()"]
+        S4["Resume Service<br/>parse_resume()<br/>extract_entities()"]
+        S5["Analysis Service<br/>analyze_fit()<br/>skill_gap_analysis()"]
+        
+        style S1 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+        style S2 fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
+        style S3 fill:#fed7aa,stroke:#f97316,stroke-width:2px
+        style S4 fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+        style S5 fill:#fbb6ce,stroke:#db2777,stroke-width:2px
+    end
+    
+    subgraph Schemas["Pydantic Schemas"]
+        Sch1["CareerInput<br/>28 validated fields<br/>Type checking"]
+        Sch2["CareerOutput<br/>Prediction response<br/>Confidence scores"]
+        Sch3["CareerEvolutionOutput<br/>Evolution stages<br/>Timeframes"]
+        
+        style Sch1 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+        style Sch2 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+        style Sch3 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    end
+    
+    Web --> CORS
+    Mobile -.-> CORS
+    CORS --> E1
+    CORS --> E2
+    CORS --> E3
+    CORS --> E4
+    CORS --> E5
+    CORS --> E6
+    CORS --> E7
+    CORS --> E8
+    
+    Static --> E3
+    ErrorHandler --> E1
+    ErrorHandler --> E2
+    
+    E1 --> Sch1 --> S1
+    E2 --> Sch1 --> S2
+    E3 --> Sch1 --> S3
+    E4 --> Sch1 --> S3
+    E5 --> S4
+    E6 --> S5
+    E7 --> S1
+    
+    S1 --> Sch2
+    S2 --> Sch3
+    
+    style Client fill:#eff6ff,stroke:#2563eb,stroke-width:3px
+    style Gateway fill:#fffbeb,stroke:#d97706,stroke-width:3px
+    style Endpoints fill:#faf5ff,stroke:#9333ea,stroke-width:3px
+    style Services fill:#fdf2f8,stroke:#db2777,stroke-width:3px
+    style Schemas fill:#fefce8,stroke:#ca8a04,stroke-width:3px

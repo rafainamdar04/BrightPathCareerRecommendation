@@ -1,0 +1,78 @@
+flowchart TD
+    %% Data Preprocessing Pipeline - Detailed Feature Engineering
+    
+    Start([Raw Dataset]) --> Load["Load CSV<br/>data/roo.csv<br/>20,000 samples<br/>29 columns total"]
+    
+    Load --> Inspect["Data Inspection<br/>• Check missing values<br/>• Identify data types<br/>• Class distribution"]
+    
+    Inspect --> Separate["Separate Features<br/>X: 28 feature columns<br/>y: 'Suggested Job Role'"]
+    
+    Separate --> TypeSplit["Feature Type Split"]
+    
+    TypeSplit --> Numerical["Numerical Features (14)<br/>• Academic percentages (8)<br/>• Hours working per day<br/>• Logical quotient rating<br/>• Hackathons count<br/>• Coding skills rating<br/>• Public speaking points"]
+    
+    TypeSplit --> Categorical["Categorical Features (14)<br/>• Can work long time?<br/>• Self-learning capability<br/>• Extra courses<br/>• Certifications<br/>• Workshops<br/>• Reading/writing skills<br/>• Memory capability<br/>• Interested subjects<br/>• Career area interest<br/>• Job/Higher Studies<br/>• Company type preference<br/>• Management/Technical<br/>• Hard/smart worker<br/>• Worked in teams"]
+    
+    Numerical --> ScaleCheck{Missing<br/>Values?}
+    ScaleCheck -->|Yes| Impute["Impute Missing<br/>Strategy: mean/median"]
+    ScaleCheck -->|No| Scale
+    Impute --> Scale["Standard Scaling<br/>Formula: z = (x - μ) / σ<br/>Result: mean=0, std=1"]
+    
+    Categorical --> EncodeCheck{Unknown<br/>Categories?}
+    EncodeCheck -->|Handle| OneHot["One-Hot Encoding<br/>handle_unknown='ignore'<br/>sparse_output=False<br/>Output: 63 binary columns"]
+    
+    Scale --> Scaled["Scaled Numerical<br/>14 columns<br/>Normalized values"]
+    OneHot --> Encoded["Encoded Categorical<br/>63 binary columns"]
+    
+    Scaled --> Concat["Concatenate Features<br/>np.hstack([X_num, X_cat])<br/>Final: 77 dimensions"]
+    Encoded --> Concat
+    
+    Concat --> Target["Prepare Target<br/>34 unique career classes<br/>String labels"]
+    
+    Target --> CheckBalance["Check Class Balance"]
+    
+    CheckBalance --> Imbalance{Severe<br/>Imbalance?}
+    
+    Imbalance -->|Yes| Oversample["Random Oversampling<br/>Strategy: balance all classes<br/>SMOTE-like approach<br/>random_state=42"]
+    Imbalance -->|No| Split
+    
+    Oversample --> Balanced["Balanced Dataset<br/>37,808 samples<br/>Equal class distribution"]
+    
+    Balanced --> Split["Train-Test Split<br/>test_size=0.2<br/>random_state=42<br/>stratify=y (maintain distribution)"]
+    
+    Split --> TrainSet["Training Set<br/>30,246 samples (80%)<br/>77 features"]
+    Split --> TestSet["Test Set<br/>7,562 samples (20%)<br/>77 features"]
+    
+    TrainSet --> SaveArtifacts["Save Preprocessing Artifacts<br/>• StandardScaler object<br/>• OneHotEncoder object<br/>• Feature names<br/>• Label mappings"]
+    TestSet --> SaveArtifacts
+    
+    SaveArtifacts --> Ready["Ready for Training"]
+    
+    Ready --> End([Preprocessed Data])
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
+    style Load fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Inspect fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
+    style Separate fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style TypeSplit fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style Numerical fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Categorical fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    style ScaleCheck fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Impute fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style Scale fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style EncodeCheck fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style OneHot fill:#fbb6ce,stroke:#ec4899,stroke-width:2px
+    style Scaled fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Encoded fill:#fbb6ce,stroke:#ec4899,stroke-width:2px
+    style Concat fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
+    style Target fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style CheckBalance fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style Imbalance fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Oversample fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
+    style Balanced fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Split fill:#fecaca,stroke:#ef4444,stroke-width:2px
+    style TrainSet fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style TestSet fill:#fbb6ce,stroke:#ec4899,stroke-width:2px
+    style SaveArtifacts fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    style Ready fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:3px

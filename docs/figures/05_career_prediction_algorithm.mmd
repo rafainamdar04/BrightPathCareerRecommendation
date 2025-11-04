@@ -1,0 +1,51 @@
+flowchart TD
+    %% Career Prediction Algorithm (MLP-based)
+    
+    Start([User Submits Form]) --> Validate["Input Validation<br/>Pydantic Schema<br/>28 fields required"]
+    
+    Validate --> Check{Valid Input?}
+    Check -->|No| Error["Return Error<br/>400 Bad Request"]
+    Check -->|Yes| Extract["Extract Features<br/>14 Numerical<br/>14 Categorical"]
+    
+    Extract --> EncCat["One-Hot Encode<br/>Categorical Features<br/>→ 63 dimensions"]
+    Extract --> ScaleNum["Standard Scale<br/>Numerical Features<br/>z = (x - μ) / σ"]
+    
+    EncCat --> Concat["Concatenate<br/>Feature Vector<br/>Total: 77 dims"]
+    ScaleNum --> Concat
+    
+    Concat --> LoadModel["Load Trained Model<br/>career_model.pkl<br/>MLPClassifier"]
+    
+    LoadModel --> Forward["Forward Pass<br/>Input → 192 → 96 → 48 → 34<br/>ReLU activations"]
+    
+    Forward --> Softmax["Softmax Layer<br/>Convert to probabilities<br/>Σ = 1.0"]
+    
+    Softmax --> Sort["Sort by Probability<br/>Get top-3 careers"]
+    
+    Sort --> Format["Format Response<br/>Career name<br/>Confidence score<br/>Probability %"]
+    
+    Format --> Return["Return JSON<br/>Top 3 Predictions"]
+    
+    Return --> UserChoice{User wants XAI?}
+    UserChoice -->|Yes| SHAP["Generate SHAP<br/>Explanation"]
+    UserChoice -->|No| End([Display Results])
+    
+    SHAP --> End
+    Error --> End
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
+    style Validate fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Check fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Extract fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
+    style EncCat fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style ScaleNum fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Concat fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style LoadModel fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    style Forward fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
+    style Softmax fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style Sort fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Format fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Return fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style UserChoice fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style SHAP fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style Error fill:#fecaca,stroke:#ef4444,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:3px

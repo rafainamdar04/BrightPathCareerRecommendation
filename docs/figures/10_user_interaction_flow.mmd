@@ -1,0 +1,98 @@
+flowchart TD
+    %% Complete User Interaction Flow
+    
+    Start([User Visits Website]) --> Landing["Landing Page<br/>Hero section<br/>Feature overview<br/>Call-to-action"]
+    
+    Landing --> Choice{User Action}
+    
+    Choice -->|Start Prediction| FormNav["Navigate to<br/>Career Prediction Form"]
+    Choice -->|Learn More| Explore["Explore Features<br/>Read documentation"]
+    
+    Explore --> Choice
+    
+    FormNav --> Form["Fill Career Form<br/>28 input fields:<br/>• Academic scores (8)<br/>• Skills & ratings (6)<br/>• Preferences (14)"]
+    
+    Form --> Validate{Form Valid?}
+    
+    Validate -->|No| ShowError["Show Validation Errors<br/>Highlight required fields<br/>Format guidance"]
+    ShowError --> Form
+    
+    Validate -->|Yes| Submit["Submit Form<br/>POST /predict_top3_careers"]
+    
+    Submit --> Loading["Loading State<br/>Show spinner<br/>Disable form"]
+    
+    Loading --> APICall["Backend Processing<br/>Feature engineering<br/>MLP inference<br/>Top-3 ranking"]
+    
+    APICall --> Results["Display Top 3 Careers<br/>• Career names<br/>• Confidence scores<br/>• Probability %<br/>• Brief descriptions"]
+    
+    Results --> UserDecision{What Next?}
+    
+    UserDecision -->|View XAI| XAIRequest["Request Explanation<br/>POST /xai_explanations/{role}<br/>Select specific career"]
+    
+    UserDecision -->|Career Evolution| EvolutionRequest["Request Evolution Path<br/>POST /predict_career_evolution<br/>Use predicted role"]
+    
+    UserDecision -->|Upload Resume| ResumeNav["Navigate to<br/>Resume Analysis"]
+    
+    UserDecision -->|Compare Careers| Compare["Compare Feature<br/>Side-by-side view<br/>Skill requirements"]
+    
+    UserDecision -->|New Prediction| FormNav
+    
+    XAIRequest --> XAIProcess["Generate SHAP<br/>Feature importance<br/>Visualization"]
+    
+    XAIProcess --> XAIDisplay["Display XAI Results<br/>• SHAP plot<br/>• Top 10 features<br/>• Text insights<br/>• Counterfactuals"]
+    
+    XAIDisplay --> UserDecision
+    
+    EvolutionRequest --> TransformerProcess["Transformer Inference<br/>Multi-head attention<br/>Career path prediction"]
+    
+    TransformerProcess --> EvolutionDisplay["Display Evolution Path<br/>• Current → Stage 1 → Stage 2 → Stage 3<br/>• Timeframes (years)<br/>• Confidence per stage<br/>• Timeline visualization"]
+    
+    EvolutionDisplay --> UserDecision
+    
+    ResumeNav --> ResumeUpload["Upload Resume<br/>Supported: PDF, DOCX<br/>Max size validation"]
+    
+    ResumeUpload --> ResumeCheck{Valid File?}
+    
+    ResumeCheck -->|No| ResumeError["Show Error<br/>Format/size issues"]
+    ResumeError --> ResumeUpload
+    
+    ResumeCheck -->|Yes| ResumeProcess["Process Resume<br/>spaCy NLP<br/>SBERT embedding<br/>Skill extraction"]
+    
+    ResumeProcess --> ResumeResults["Display Analysis<br/>• Extracted info<br/>• Skills found<br/>• Skill gaps<br/>• Career match %<br/>• Recommendations"]
+    
+    ResumeResults --> UserDecision
+    
+    Compare --> CompareView["Comparison View<br/>Feature matrix<br/>Requirements vs Profile<br/>Gap analysis"]
+    
+    CompareView --> UserDecision
+    
+    UserDecision -->|Track Progress| Progress["Progress Tracking<br/>Save predictions<br/>Track evolution<br/>Export reports"]
+    
+    Progress --> UserDecision
+    
+    UserDecision -->|Exit| Feedback["Optional Feedback<br/>Rate experience<br/>Comments<br/>Would recommend?"]
+    
+    Feedback --> End([Session Complete])
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
+    style Landing fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Choice fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Form fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
+    style Validate fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Submit fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style APICall fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style Results fill:#dcfce7,stroke:#22c55e,stroke-width:3px
+    style UserDecision fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
+    style XAIRequest fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style XAIDisplay fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style EvolutionRequest fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style EvolutionDisplay fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
+    style ResumeUpload fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    style ResumeProcess fill:#fbb6ce,stroke:#ec4899,stroke-width:2px
+    style ResumeResults fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    style Compare fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Progress fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style ShowError fill:#fecaca,stroke:#ef4444,stroke-width:2px
+    style ResumeError fill:#fecaca,stroke:#ef4444,stroke-width:2px
+    style Feedback fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:3px

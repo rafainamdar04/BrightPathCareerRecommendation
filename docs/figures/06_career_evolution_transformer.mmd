@@ -1,0 +1,58 @@
+flowchart TD
+    %% Career Evolution Algorithm (Transformer-based)
+    
+    Start([User Requests Evolution]) --> Input["Collect Inputs<br/>• User profile (28 features)<br/>• Current career role<br/>• Career history"]
+    
+    Input --> EncodeRole["Encode Career Role<br/>LabelEncoder<br/>Role → Integer ID"]
+    
+    EncodeRole --> EmbedSeq["Embedding Layer<br/>Career sequence<br/>→ 128-dim vectors"]
+    
+    EmbedSeq --> PosEnc["Positional Encoding<br/>Add position info<br/>PE = sin/cos functions"]
+    
+    PosEnc --> SelfAttn["Multi-Head Self-Attention<br/>4 attention heads<br/>Key dim: 64<br/>Learn role relationships"]
+    
+    SelfAttn --> AddNorm1["Add & Normalize<br/>Residual connection<br/>LayerNorm"]
+    
+    AddNorm1 --> FFN["Feed-Forward Network<br/>Dense(128) → ReLU → Dense(64)"]
+    
+    FFN --> AddNorm2["Add & Normalize<br/>Second residual"]
+    
+    AddNorm2 --> CrossAttn["Cross-Attention<br/>Query: Career sequence<br/>Key/Value: User features<br/>Personalization layer"]
+    
+    CrossAttn --> Dense1["Dense Layer 1<br/>256 neurons<br/>ReLU + Dropout(0.3)"]
+    
+    Dense1 --> Dense2["Dense Layer 2<br/>128 neurons<br/>ReLU + Dropout(0.2)"]
+    
+    Dense2 --> Output["Output Layer<br/>Softmax(n_careers)<br/>Predict next roles"]
+    
+    Output --> TopK["Select Top-K<br/>Next 3 career stages<br/>with probabilities"]
+    
+    TopK --> TimeModel["Time Prediction Model<br/>Estimate transition years<br/>Based on user profile"]
+    
+    TimeModel --> BuildPath["Build Evolution Path<br/>Stage 1 → Stage 2 → Stage 3<br/>With timeframes"]
+    
+    BuildPath --> Confidence["Calculate Confidence<br/>Per transition<br/>Based on attention weights"]
+    
+    Confidence --> Format["Format Response<br/>• Career stages<br/>• Timeframes<br/>• Confidence scores<br/>• Natural language desc"]
+    
+    Format --> End([Return Evolution Path])
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
+    style Input fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style EncodeRole fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style EmbedSeq fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style PosEnc fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style SelfAttn fill:#c4b5fd,stroke:#8b5cf6,stroke-width:3px
+    style AddNorm1 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style FFN fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style AddNorm2 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style CrossAttn fill:#c4b5fd,stroke:#8b5cf6,stroke-width:3px
+    style Dense1 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style Dense2 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style Output fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style TopK fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style TimeModel fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style BuildPath fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Confidence fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Format fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:3px

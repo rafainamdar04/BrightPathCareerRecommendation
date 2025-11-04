@@ -1,0 +1,35 @@
+graph LR
+    %% Hardware Architecture (Current Local + Planned Cloud)
+    
+    subgraph Current["Current Setup (Local Development)"]
+        User["User Device<br/>Windows/macOS<br/>8-16 GB RAM<br/>Browser Client"]
+        Dev["Development Machine<br/>Windows PC<br/>16-32 GB RAM<br/>Python + Node.js<br/>localhost:8000 (Backend)<br/>localhost:5173 (Frontend)"]
+        Files["Local Storage<br/>CSV Data<br/>ML Models (.pkl, .h5)<br/>Static Assets"]
+        
+        style User fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+        style Dev fill:#dcfce7,stroke:#22c55e,stroke-width:3px
+        style Files fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    end
+    
+    subgraph Planned["Planned (Not Yet Deployed)"]
+        Cloud["Cloud Server<br/>(AWS/Azure/GCP)<br/>4-8 vCPUs<br/>16-32 GB RAM"]
+        DB["Database Server<br/>(PostgreSQL/MySQL)<br/>User data & feedback"]
+        Storage["Object Storage<br/>(S3/Blob Storage)<br/>Models & Assets"]
+        
+        style Cloud fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
+        style DB fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
+        style Storage fill:#ffffff,stroke:#64748b,stroke-width:2px,stroke-dasharray: 5 5
+    end
+    
+    User -->|HTTP/HTTPS| Dev
+    Dev <-->|Read/Write| Files
+    
+    Dev -.->|Future Migration| Cloud
+    Cloud -.->|Future| DB
+    Cloud -.->|Future| Storage
+    
+    style Current fill:#f0fdf4,stroke:#16a34a,stroke-width:3px
+    style Planned fill:#f8fafc,stroke:#94a3b8,stroke-width:3px,stroke-dasharray: 5 5
+    
+    Legend["Legend:<br/>Solid = Active<br/>Dashed = Planned"]
+    style Legend fill:#fafafa,stroke:#e5e7eb,stroke-width:1px
