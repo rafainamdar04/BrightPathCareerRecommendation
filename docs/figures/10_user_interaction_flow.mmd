@@ -1,56 +1,48 @@
-sequenceDiagram
-    title User Interaction Flow (Balanced)
-    actor User
-    participant FE as Frontend (React)
-    participant API as Backend (FastAPI)
-    participant SVC as Services (MLP/Transformer/NLP/XAI)
-
-    User->>FE: Fill form and submit
-    FE->>API: POST /predict
-    API->>SVC: Run MLP inference
-    SVC-->>API: Top 3 careers + scores
-    API-->>FE: Results
-
-    User->>FE: Request explanation
-    FE->>API: GET /xai
-    API->>SVC: Compute SHAP
-    SVC-->>API: Explanation + plot
-    API-->>FE: Explanation
-
-    User->>FE: Upload resume (optional)
-    FE->>API: POST /resume/analyze
-    API->>SVC: Extract + Embed + Compare
-    SVC-->>API: Skill gap report
-    API-->>FE: Analysis
-flowchart LR
-    %% User Interaction - Simple
+flowchart TD
+    %% User Interaction - Activity Diagram (Balanced)
     
-    A["Fill Form"] --> B["Get Top 3<br/>Predictions"]
-    B --> C["View XAI<br/>Evolution<br/>Resume"]
+    Start([Start]) --> Landing[Open App]
+    Landing --> Form[Complete Form<br/>Scores, skills, preferences]
+    Form --> Submit[Submit for Analysis]
+    Submit --> Predict[/Call API: POST /predict/]
+    Predict --> Results[Display Top 3 Careers<br/>Names + confidence]
     
-    style A fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
-    style B fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style C fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    Results --> Choice{Next Action?}
     
-    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
+    Choice -->|Explain| XAI[Request XAI Explanation]
+    XAI --> XAICompute[/GET /xai/ (SHAP)/]
+    XAICompute --> XAIShow[Show explanation<br/>Feature importance]
+    
+    Choice -->|Evolution| Evo[View Career Evolution]
+    Evo --> EvoCompute[/GET /evolution/]
+    EvoCompute --> EvoShow[Show path + timeline]
+    
+    Choice -->|Resume| Resume[Upload Resume]
+    Resume --> ResumeCompute[/POST /resume/analyze/]
+    ResumeCompute --> ResumeShow[Show skill gap + match]
+    
+    XAIShow --> Choice
+    EvoShow --> Choice
+    ResumeShow --> Choice
+    
+    Choice -->|Finish| End([End])
+    
+    %% Styling
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     style Landing fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Form fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style Submit fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
+    style Predict fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
+    style Results fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
     style Choice fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style Form fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
-    style Validate fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style Submit fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
-    style APICall fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style Results fill:#dcfce7,stroke:#22c55e,stroke-width:3px
-    style UserDecision fill:#fef3c7,stroke:#f59e0b,stroke-width:3px
-    style XAIRequest fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style XAIDisplay fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style EvolutionRequest fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style EvolutionDisplay fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
-    style ResumeUpload fill:#fce7f3,stroke:#ec4899,stroke-width:2px
-    style ResumeProcess fill:#fbb6ce,stroke:#ec4899,stroke-width:2px
-    style ResumeResults fill:#fce7f3,stroke:#ec4899,stroke-width:2px
-    style Compare fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
-    style Progress fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-    style ShowError fill:#fecaca,stroke:#ef4444,stroke-width:2px
-    style ResumeError fill:#fecaca,stroke:#ef4444,stroke-width:2px
-    style Feedback fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style End fill:#dcfce7,stroke:#22c55e,stroke-width:3px
+    style XAI fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style XAICompute fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style XAIShow fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style Evo fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
+    style EvoCompute fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
+    style EvoShow fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
+    style Resume fill:#fbb6ce,stroke:#ec4899,stroke-width:2px
+    style ResumeCompute fill:#fbb6ce,stroke:#ec4899,stroke-width:2px
+    style ResumeShow fill:#fbb6ce,stroke:#ec4899,stroke-width:2px
+    
