@@ -1,19 +1,12 @@
-flowchart TD
-    %% Career Evolution Algorithm (Transformer-based) - Simplified
+flowchart LR
+    %% Career Evolution - Simple
     
-    Start([User Requests Evolution]) --> Input["Collect Inputs<br/>User profile + Current role"]
+    A["Profile +<br/>Current Role"] --> B["Transformer<br/>Attention Model"]
+    B --> C["Future Path<br/>3 stages + years"]
     
-    Input --> Encode["Encode & Embed<br/>Role → Vector (128-dim)<br/>+ Positional encoding"]
-    
-    Encode --> Attention["Transformer Processing<br/>Multi-head self-attention<br/>Cross-attention with profile<br/>Feed-forward network"]
-    
-    Attention --> Predict["Predict Next Stages<br/>Softmax output<br/>Select top-3 roles"]
-    
-    Predict --> Timeline["Add Timeframes<br/>Estimate transition years<br/>Calculate confidence"]
-    
-    Timeline --> Format["Format Evolution Path<br/>Stage 1 → Stage 2 → Stage 3<br/>With years and confidence"]
-    
-    Format --> End([Return Evolution Path])
+    style A fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style B fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style C fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     
     style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
     style Input fill:#dbeafe,stroke:#3b82f6,stroke-width:2px

@@ -1,32 +1,12 @@
-flowchart TD
-    %% User Interaction Flow - Simplified
+flowchart LR
+    %% User Interaction - Simple
     
-    Start([User Visits Website]) --> Landing["Landing Page<br/>Overview and CTA"]
+    A["Fill Form"] --> B["Get Top 3<br/>Predictions"]
+    B --> C["View XAI<br/>Evolution<br/>Resume"]
     
-    Landing --> Form["Fill Career Form<br/>28 fields: academics,<br/>skills, preferences"]
-    
-    Form --> Submit["Submit for Prediction"]
-    
-    Submit --> Results["View Top 3 Careers<br/>Confidence scores<br/>Descriptions"]
-    
-    Results --> Options{Choose Action}
-    
-    Options -->|Explain| XAI["View XAI Explanation<br/>SHAP feature importance<br/>Why this career?"]
-    
-    Options -->|Evolution| Evolution["View Career Path<br/>Future progression<br/>Timeframes"]
-    
-    Options -->|Resume| Resume["Upload Resume<br/>Skill gap analysis<br/>Match percentage"]
-    
-    Options -->|Compare| Compare["Compare Careers<br/>Side-by-side view<br/>Requirements"]
-    
-    Options -->|New| Form
-    
-    XAI --> Options
-    Evolution --> Options
-    Resume --> Options
-    Compare --> Options
-    
-    Options -->|Exit| End([Session Complete])
+    style A fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style B fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style C fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     
     style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
     style Landing fill:#dbeafe,stroke:#3b82f6,stroke-width:2px

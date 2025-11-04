@@ -1,24 +1,12 @@
-flowchart TD
-    %% XAI (SHAP) Explanation Generation Flow - Simplified
+flowchart LR
+    %% XAI Explanation - Simple
     
-    Start([User Requests Explanation]) --> Load["Load Model & Data<br/>career_model.pkl<br/>Background dataset"]
+    A["Prediction"] --> B["SHAP<br/>Feature Importance"]
+    B --> C["Visualization<br/>+ Explanation"]
     
-    Load --> Compute["Compute SHAP Values<br/>TreeExplainer / KernelExplainer<br/>Calculate feature contributions"]
-    
-    Compute --> Rank["Rank Features<br/>Sort by importance<br/>Identify top 10"]
-    
-    Rank --> Visualize["Generate Visualization<br/>SHAP force plot<br/>Save to backend/static/"]
-    
-    Visualize --> Explain["Natural Language Explanation<br/>Convert SHAP to readable text<br/>Calculate confidence level"]
-    
-    Explain --> Counterfactual{User wants<br/>what-if analysis?}
-    
-    Counterfactual -->|Yes| WhatIf["Generate Suggestions<br/>What to change<br/>Priority ranking"]
-    Counterfactual -->|No| Format
-    
-    WhatIf --> Format["Format Response<br/>SHAP values, plot, insights"]
-    
-    Format --> End([Return XAI Response])
+    style A fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style B fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style C fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     
     style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
     style Input fill:#dbeafe,stroke:#3b82f6,stroke-width:2px

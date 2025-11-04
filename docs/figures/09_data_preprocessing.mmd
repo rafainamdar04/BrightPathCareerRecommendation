@@ -1,23 +1,14 @@
-flowchart TD
-    %% Data Preprocessing Pipeline - Simplified
+flowchart LR
+    %% Data Preprocessing - Simple
     
-    Start([Raw Dataset]) --> Load["Load CSV<br/>20,000 samples<br/>28 features + target"]
+    A["Raw Data<br/>20k samples"] --> B["Encode +<br/>Scale"]
+    B --> C["Balance<br/>Classes"]
+    C --> D["Train/Test<br/>Split"]
     
-    Load --> Split_Types["Split Feature Types<br/>14 Numerical<br/>14 Categorical"]
-    
-    Split_Types --> Process_Num["Process Numerical<br/>Standard scaling<br/>z = (x - μ) / σ"]
-    Split_Types --> Process_Cat["Process Categorical<br/>One-hot encoding<br/>63 dimensions"]
-    
-    Process_Num --> Combine["Combine Features<br/>Total: 77 dimensions"]
-    Process_Cat --> Combine
-    
-    Combine --> Balance["Balance Classes<br/>Random oversampling<br/>20k → 37,808 samples"]
-    
-    Balance --> Split["Train-Test Split<br/>80% train (30,246)<br/>20% test (7,562)<br/>Stratified"]
-    
-    Split --> Save["Save Artifacts<br/>Scalers, encoders<br/>Feature names"]
-    
-    Save --> End([Ready for Training])
+    style A fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style B fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style C fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style D fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     
     style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
     style Load fill:#dbeafe,stroke:#3b82f6,stroke-width:2px

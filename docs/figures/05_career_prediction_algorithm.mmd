@@ -1,36 +1,14 @@
-flowchart TD
-    %% Career Prediction Algorithm (MLP-based)
+flowchart LR
+    %% Career Prediction Algorithm - Simple
     
-    Start([User Submits Form]) --> Validate["Input Validation<br/>Pydantic Schema<br/>28 fields required"]
+    A["User Input<br/>28 fields"] --> B["Preprocess<br/>Encode + Scale"]
+    B --> C["MLP Model<br/>3 layers"]
+    C --> D["Top 3 Careers<br/>with confidence"]
     
-    Validate --> Check{Valid Input?}
-    Check -->|No| Error["Return Error<br/>400 Bad Request"]
-    Check -->|Yes| Extract["Extract Features<br/>14 Numerical<br/>14 Categorical"]
-    
-    Extract --> EncCat["One-Hot Encode<br/>Categorical Features<br/>→ 63 dimensions"]
-    Extract --> ScaleNum["Standard Scale<br/>Numerical Features<br/>z = (x - μ) / σ"]
-    
-    EncCat --> Concat["Concatenate<br/>Feature Vector<br/>Total: 77 dims"]
-    ScaleNum --> Concat
-    
-    Concat --> LoadModel["Load Trained Model<br/>career_model.pkl<br/>MLPClassifier"]
-    
-    LoadModel --> Forward["Forward Pass<br/>Input → 192 → 96 → 48 → 34<br/>ReLU activations"]
-    
-    Forward --> Softmax["Softmax Layer<br/>Convert to probabilities<br/>Σ = 1.0"]
-    
-    Softmax --> Sort["Sort by Probability<br/>Get top-3 careers"]
-    
-    Sort --> Format["Format Response<br/>Career name<br/>Confidence score<br/>Probability %"]
-    
-    Format --> Return["Return JSON<br/>Top 3 Predictions"]
-    
-    Return --> UserChoice{User wants XAI?}
-    UserChoice -->|Yes| SHAP["Generate SHAP<br/>Explanation"]
-    UserChoice -->|No| End([Display Results])
-    
-    SHAP --> End
-    Error --> End
+    style A fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style B fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style C fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style D fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     
     style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
     style Validate fill:#dbeafe,stroke:#3b82f6,stroke-width:2px

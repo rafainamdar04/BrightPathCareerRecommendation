@@ -1,19 +1,14 @@
-flowchart TD
-    %% Resume Analysis NLP Pipeline - Simplified
+flowchart LR
+    %% Resume Analysis - Simple
     
-    Start([User Uploads Resume]) --> Extract["Extract Text<br/>PDF or DOCX<br/>Clean and normalize"]
+    A["Resume<br/>PDF/DOCX"] --> B["spaCy<br/>Extract Info"]
+    B --> C["SBERT<br/>Embedding"]
+    C --> D["Skill Gap<br/>Analysis"]
     
-    Extract --> NLP["spaCy NLP Processing<br/>Tokenization, POS tagging<br/>Named entity recognition"]
-    
-    NLP --> Extract_Info["Extract Information<br/>• Name, contact, education<br/>• Work experience, dates<br/>• Skills and certifications"]
-    
-    Extract_Info --> Embed["SBERT Semantic Embedding<br/>all-MiniLM-L6-v2<br/>Resume → 384-dim vector"]
-    
-    Embed --> Compare["Compare with Careers<br/>Cosine similarity<br/>Skill gap analysis"]
-    
-    Compare --> Report["Generate Report<br/>Match score, skill gaps<br/>Recommendations"]
-    
-    Report --> End([Return Analysis])
+    style A fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style B fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style C fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style D fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     
     style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
     style FileCheck fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
