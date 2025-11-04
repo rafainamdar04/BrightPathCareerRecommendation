@@ -23,32 +23,3 @@ flowchart TD
     style Explain fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     style Return fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
     style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-flowchart LR
-    %% XAI Explanation - Simple
-    
-    A["Prediction"] --> B["SHAP<br/>Feature Importance"]
-    B --> C["Visualization<br/>+ Explanation"]
-    
-    style A fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
-    style B fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style C fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-    
-    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
-    style Input fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
-    style LoadModel fill:#fce7f3,stroke:#ec4899,stroke-width:2px
-    style SelectExplainer fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style TreeExp fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style KernelExp fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style ComputeSHAP fill:#c4b5fd,stroke:#8b5cf6,stroke-width:3px
-    style BaseValue fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style Attribution fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style RankFeatures fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style GenViz fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
-    style SavePlot fill:#fce7f3,stroke:#ec4899,stroke-width:2px
-    style NLG fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-    style Confidence fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style Counterfactual fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style WhatIf fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style Actionable fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-    style Format fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-    style End fill:#dcfce7,stroke:#22c55e,stroke-width:3px

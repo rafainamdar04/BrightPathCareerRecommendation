@@ -4,49 +4,23 @@ This folder contains all architecture diagrams and documentation for the BrightP
 
 ## 📐 Architecture Diagrams
 
-All diagrams are in the `figures/` folder and use Mermaid format for easy editing and rendering.
+- Primary source files live in `docs/figures/*.mmd` (Mermaid).
+- For GitHub rendering, see the embedded versions in: [FIGURES.md](./FIGURES.md)
 
-### Available Diagrams
+### Current Diagram Set (sources in `docs/figures/`)
 
-1. **System Architecture** (`01_system_architecture.mmd`)
-   - Complete system overview with all layers
-   - Shows client, gateway, services, and data layers
-   - Color-coded by component type
-
-2. **Data Flow** (`02_data_flow.mmd`)
-   - End-to-end data flow through the system
-   - From user input to system output
-   - Shows all processing stages
-
-3. **Career Prediction Sequence** (`03_sequence_career_prediction.mmd`)
-   - Step-by-step career prediction workflow
-   - Includes XAI explanation generation
-   - Numbered sequence for easy reference
-
-4. **Career Evolution Sequence** (`04_sequence_career_evolution.mmd`)
-   - AI-powered career trajectory prediction
-   - Transformer model workflow
-   - Personalized timeline generation
-
-5. **Resume Analysis Sequence** (`05_sequence_resume_analysis.mmd`)
-   - NLP-based resume parsing
-   - SBERT semantic analysis
-   - Skill gap analysis workflow
-
-6. **Component Interaction** (`06_component_interaction.mmd`)
-   - How system components interact
-   - Frontend-backend communication
-   - Model and data layer access
-
-7. **ML Pipeline** (`07_ml_pipeline.mmd`)
-   - Detailed machine learning pipeline
-   - Data preprocessing steps
-   - Model architecture details
-
-8. **XAI Pipeline** (`08_xai_pipeline.mmd`)
-   - SHAP explainability generation
-   - Visualization creation process
-   - Natural language explanation
+1. `01_system_block_diagram.mmd` — System Architecture (block diagram)
+2. `02_hardware_architecture.mmd` — Hardware architecture (current vs planned)
+3. `03_software_layers.mmd` — Layered software architecture
+4. `04_ml_pipeline.mmd` — ML pipeline (training to inference)
+5. `05_career_prediction_algorithm.mmd` — Career prediction algorithm (balanced)
+6. `06_career_evolution_transformer.mmd` — Career evolution (Transformer)
+7. `07_resume_nlp_pipeline.mmd` — Resume NLP pipeline
+8. `08_xai_explanation_flow.mmd` — XAI SHAP explanation flow
+9. `09_data_preprocessing.mmd` — Data preprocessing pipeline
+10. `10_user_interaction_flow.mmd` — User interaction (activity diagram)
+11. `11_api_endpoint_architecture.mmd` — API endpoints and services
+12. `12_hardware_components.mmd` — Hardware component specs
 
 ## 📄 Documentation Files
 
@@ -69,8 +43,9 @@ All diagrams are in the `figures/` folder and use Mermaid format for easy editin
 2. Open `.mmd` file
 3. Click preview button
 
-### Method 3: GitHub
-- Diagrams render automatically in GitHub when embedded in markdown
+### Method 3: GitHub (embedded)
+- Diagrams render automatically when embedded in markdown code fences.
+- Use [FIGURES.md](./FIGURES.md) for GitHub-rendered versions.
 
 ### Method 4: Generate Images
 ```bash
@@ -157,6 +132,6 @@ All diagrams follow these principles:
 
 ---
 
-**Last Updated:** October 27, 2025  
-**Version:** 2.0 (Clean, Paper-Ready)  
+**Last Updated:** November 5, 2025  
+**Version:** 2.1 (Balanced, GitHub-rendered)  
 **Status:** Ready for Academic Publication

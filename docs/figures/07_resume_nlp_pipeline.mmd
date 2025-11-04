@@ -23,34 +23,3 @@ flowchart TD
     style Gap fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
     style Report fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-flowchart LR
-    %% Resume Analysis - Simple
-    
-    A["Resume<br/>PDF/DOCX"] --> B["spaCy<br/>Extract Info"]
-    B --> C["SBERT<br/>Embedding"]
-    C --> D["Skill Gap<br/>Analysis"]
-    
-    style A fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
-    style B fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style C fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style D fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-    
-    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:3px
-    style FileCheck fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style ExtractPDF fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
-    style ExtractDOCX fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
-    style Clean fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
-    style SpacyLoad fill:#fce7f3,stroke:#ec4899,stroke-width:2px
-    style Tokenize fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style POS fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style NER fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style CustomNER fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style SkillMatch fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style Experience fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style SBERT fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
-    style Similarity fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style GapAnalysis fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
-    style Score fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-    style Report fill:#dcfce7,stroke:#22c55e,stroke-width:2px
-    style ErrorType fill:#fecaca,stroke:#ef4444,stroke-width:2px
-    style End fill:#dcfce7,stroke:#22c55e,stroke-width:3px
