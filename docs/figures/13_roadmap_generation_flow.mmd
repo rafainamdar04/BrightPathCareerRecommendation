@@ -1,0 +1,32 @@
+flowchart TD
+    %% Career Roadmap Generation Flow - Technical Diagram
+    
+    Start([Request Roadmap]) --> Decode["Decode Role Name<br/>URL decode + sanitize"]
+    
+    Decode --> APICall["Call Mistral AI API<br/>Endpoint: api.mistral.ai/v1/chat<br/>Model: mistral-small-latest"]
+    
+    APICall --> Prompt["Generate Structured Prompt<br/>Request: skills, certs, projects<br/>Format: JSON with required keys"]
+    
+    Prompt --> Parse{API Response?}
+    
+    Parse -->|Success| Validate["Validate JSON<br/>Check required keys<br/>Ensure proper structure"]
+    
+    Parse -->|Failure| Fallback["Fallback to Local Data<br/>Role-specific templates<br/>Hardcoded career paths"]
+    
+    Validate -->|Valid| Return["Return Roadmap<br/>CareerRoadmap schema<br/>Skills/Certs/Projects"]
+    
+    Validate -->|Invalid| Fallback
+    
+    Fallback --> Return
+    
+    Return --> End([Display to User])
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Decode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style APICall fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
+    style Prompt fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style Parse fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Validate fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Fallback fill:#fecaca,stroke:#ef4444,stroke-width:2px
+    style Return fill:#a7f3d0,stroke:#10b981,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px

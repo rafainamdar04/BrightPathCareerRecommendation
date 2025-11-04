@@ -24,8 +24,10 @@ graph TD
         E4["POST /xai_counterfactual/{target_role}<br/>Path: target_role<br/>Body: CareerInput<br/>Query: max_changes<br/>Handler: xai_counterfactual()"]
         E5["POST /parse_resume<br/>Input: UploadFile (PDF/DOCX)<br/>Output: ParsedResumeOutput<br/>Handler: parse_resume()"]
         E6["POST /analyze_resume<br/>Input: Resume + target_career<br/>Output: ResumeAnalysisOutput<br/>Handler: analyze_resume()"]
-        E7["GET /model_architecture<br/>Output: Model structure JSON<br/>Handler: get_model_arch()"]
-        E8["GET /health<br/>Output: System status<br/>Handler: health_check()"]
+        E7["GET /career_roadmap/{role}<br/>Path: role (string)<br/>Output: CareerRoadmap<br/>Handler: get_roadmap()"]
+        E8["POST /compare_resume_with_roadmap<br/>Input: UploadFile + role<br/>Output: Roadmap + gap analysis<br/>Handler: compare_resume()"]
+        E9["GET /model_architecture<br/>Output: Model structure JSON<br/>Handler: get_model_arch()"]
+        E10["GET /health<br/>Output: System status<br/>Handler: health_check()"]
         
         style E1 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
         style E2 fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
@@ -33,8 +35,10 @@ graph TD
         style E4 fill:#fcd34d,stroke:#f59e0b,stroke-width:2px
         style E5 fill:#fce7f3,stroke:#ec4899,stroke-width:2px
         style E6 fill:#fbb6ce,stroke:#db2777,stroke-width:2px
-        style E7 fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
-        style E8 fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+        style E7 fill:#a7f3d0,stroke:#10b981,stroke-width:2px
+        style E8 fill:#86efac,stroke:#16a34a,stroke-width:2px
+        style E9 fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+        style E10 fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     end
     
     subgraph Services["Service Layer"]
@@ -43,12 +47,14 @@ graph TD
         S3["XAI Service<br/>explain_prediction()<br/>generate_counterfactual()"]
         S4["Resume Service<br/>parse_resume()<br/>extract_entities()"]
         S5["Analysis Service<br/>analyze_fit()<br/>skill_gap_analysis()"]
+        S6["Roadmap Service<br/>get_career_roadmap()<br/>Mistral AI integration"]
         
         style S1 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
         style S2 fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
         style S3 fill:#fed7aa,stroke:#f97316,stroke-width:2px
         style S4 fill:#fce7f3,stroke:#ec4899,stroke-width:2px
         style S5 fill:#fbb6ce,stroke:#db2777,stroke-width:2px
+        style S6 fill:#a7f3d0,stroke:#10b981,stroke-width:2px
     end
     
     subgraph Schemas["Pydantic Schemas"]
@@ -71,6 +77,8 @@ graph TD
     CORS --> E6
     CORS --> E7
     CORS --> E8
+    CORS --> E9
+    CORS --> E10
     
     Static --> E3
     ErrorHandler --> E1
@@ -82,7 +90,10 @@ graph TD
     E4 --> Sch1 --> S3
     E5 --> S4
     E6 --> S5
-    E7 --> S1
+    E7 --> S6
+    E8 --> S4
+    E8 --> S6
+    E9 --> S1
     
     S1 --> Sch2
     S2 --> Sch3

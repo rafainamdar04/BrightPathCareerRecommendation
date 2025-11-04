@@ -13,14 +13,15 @@ This folder contains all architecture diagrams and documentation for the BrightP
 2. `02_hardware_architecture.mmd` — Hardware architecture (current vs planned)
 3. `03_software_layers.mmd` — Layered software architecture
 4. `04_ml_pipeline.mmd` — ML pipeline (training to inference)
-5. `05_career_prediction_algorithm.mmd` — Career prediction algorithm (balanced)
+5. `05_career_prediction_algorithm.mmd` — Career prediction algorithm with roadmap generation
 6. `06_career_evolution_transformer.mmd` — Career evolution (Transformer)
 7. `07_resume_nlp_pipeline.mmd` — Resume NLP pipeline
 8. `08_xai_explanation_flow.mmd` — XAI SHAP explanation flow
 9. `09_data_preprocessing.mmd` — Data preprocessing pipeline
-10. `10_user_interaction_flow.mmd` — User interaction (activity diagram)
-11. `11_api_endpoint_architecture.mmd` — API endpoints and services
+10. `10_user_interaction_flow.mmd` — User interaction with roadmap (activity diagram)
+11. `11_api_endpoint_architecture.mmd` — API endpoints and services including roadmap
 12. `12_hardware_components.mmd` — Hardware component specs
+13. `13_roadmap_generation_flow.mmd` — Career roadmap generation with Mistral AI
 
 ## 📄 Documentation Files
 
@@ -133,5 +134,5 @@ All diagrams follow these principles:
 ---
 
 **Last Updated:** November 5, 2025  
-**Version:** 2.1 (Balanced, GitHub-rendered)  
+**Version:** 2.2 (Roadmap Integration)  
 **Status:** Ready for Academic Publication

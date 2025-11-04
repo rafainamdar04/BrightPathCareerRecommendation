@@ -241,7 +241,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    %% Career Prediction Algorithm - Balanced Flowchart
+    %% Career Prediction Algorithm with Roadmap Generation
     
     Start([User Submits Form]) --> Validate["Validate Input<br/>28 required fields"]
     
@@ -251,7 +251,9 @@ flowchart TD
     
     Model --> Rank["Rank Predictions<br/>Sort by probability<br/>Select top 3 careers"]
     
-    Rank --> Output["Return Results<br/>Career names<br/>Confidence scores<br/>Probabilities"]
+    Rank --> Roadmap["Fetch Roadmaps<br/>Mistral AI API call<br/>Fallback to local data"]
+    
+    Roadmap --> Output["Return Results<br/>Career names + confidence<br/>Skills/certifications/projects"]
     
     Output --> End([Display to User])
     
@@ -260,6 +262,7 @@ flowchart TD
     style Preprocess fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
     style Model fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
     style Rank fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Roadmap fill:#fed7aa,stroke:#f97316,stroke-width:2px
     style Output fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
 ```
@@ -399,7 +402,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    %% User Interaction - Activity Diagram (Balanced)
+    %% User Interaction - Activity Diagram with Roadmap
     
     Start([Start]) --> Landing[Open App]
     Landing --> Form[Complete Form<br/>Scores, skills, preferences]
@@ -408,6 +411,10 @@ flowchart TD
     Predict --> Results[Display Top 3 Careers<br/>Names + confidence]
     
     Results --> Choice{Next Action?}
+    
+    Choice -->|Roadmap| Road[View Career Roadmap]
+    Road --> RoadCompute["GET /career_roadmap/{role}"]
+    RoadCompute --> RoadShow[Show skills, certs,<br/>projects for role]
     
     Choice -->|Explain| XAI[Request XAI Explanation]
     XAI --> XAICompute["GET /xai (SHAP)"]
@@ -421,6 +428,7 @@ flowchart TD
     Resume --> ResumeCompute["POST /resume/analyze"]
     ResumeCompute --> ResumeShow[Show skill gap + match]
     
+    RoadShow --> Choice
     XAIShow --> Choice
     EvoShow --> Choice
     ResumeShow --> Choice
@@ -436,6 +444,9 @@ flowchart TD
     style Predict fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
     style Results fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
     style Choice fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Road fill:#a7f3d0,stroke:#10b981,stroke-width:2px
+    style RoadCompute fill:#a7f3d0,stroke:#10b981,stroke-width:2px
+    style RoadShow fill:#a7f3d0,stroke:#10b981,stroke-width:2px
     style XAI fill:#fed7aa,stroke:#f97316,stroke-width:2px
     style XAICompute fill:#fed7aa,stroke:#f97316,stroke-width:2px
     style XAIShow fill:#fed7aa,stroke:#f97316,stroke-width:2px
@@ -478,8 +489,10 @@ graph TD
         E4["POST /xai_counterfactual/{target_role}<br/>Path: target_role<br/>Body: CareerInput<br/>Query: max_changes<br/>Handler: xai_counterfactual()"]
         E5["POST /parse_resume<br/>Input: UploadFile (PDF/DOCX)<br/>Output: ParsedResumeOutput<br/>Handler: parse_resume()"]
         E6["POST /analyze_resume<br/>Input: Resume + target_career<br/>Output: ResumeAnalysisOutput<br/>Handler: analyze_resume()"]
-        E7["GET /model_architecture<br/>Output: Model structure JSON<br/>Handler: get_model_arch()"]
-        E8["GET /health<br/>Output: System status<br/>Handler: health_check()"]
+        E7["GET /career_roadmap/{role}<br/>Path: role (string)<br/>Output: CareerRoadmap<br/>Handler: get_roadmap()"]
+        E8["POST /compare_resume_with_roadmap<br/>Input: UploadFile + role<br/>Output: Roadmap + gap analysis<br/>Handler: compare_resume()"]
+        E9["GET /model_architecture<br/>Output: Model structure JSON<br/>Handler: get_model_arch()"]
+        E10["GET /health<br/>Output: System status<br/>Handler: health_check()"]
         
         style E1 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
         style E2 fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
@@ -487,8 +500,10 @@ graph TD
         style E4 fill:#fcd34d,stroke:#f59e0b,stroke-width:2px
         style E5 fill:#fce7f3,stroke:#ec4899,stroke-width:2px
         style E6 fill:#fbb6ce,stroke:#db2777,stroke-width:2px
-        style E7 fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
-        style E8 fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+        style E7 fill:#a7f3d0,stroke:#10b981,stroke-width:2px
+        style E8 fill:#86efac,stroke:#16a34a,stroke-width:2px
+        style E9 fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+        style E10 fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     end
     
     subgraph Services["Service Layer"]
@@ -497,12 +512,14 @@ graph TD
         S3["XAI Service<br/>explain_prediction()<br/>generate_counterfactual()"]
         S4["Resume Service<br/>parse_resume()<br/>extract_entities()"]
         S5["Analysis Service<br/>analyze_fit()<br/>skill_gap_analysis()"]
+        S6["Roadmap Service<br/>get_career_roadmap()<br/>Mistral AI integration"]
         
         style S1 fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
         style S2 fill:#c4b5fd,stroke:#8b5cf6,stroke-width:2px
         style S3 fill:#fed7aa,stroke:#f97316,stroke-width:2px
         style S4 fill:#fce7f3,stroke:#ec4899,stroke-width:2px
         style S5 fill:#fbb6ce,stroke:#db2777,stroke-width:2px
+        style S6 fill:#a7f3d0,stroke:#10b981,stroke-width:2px
     end
     
     subgraph Schemas["Pydantic Schemas"]
@@ -525,6 +542,8 @@ graph TD
     CORS --> E6
     CORS --> E7
     CORS --> E8
+    CORS --> E9
+    CORS --> E10
     
     Static --> E3
     ErrorHandler --> E1
@@ -536,7 +555,10 @@ graph TD
     E4 --> Sch1 --> S3
     E5 --> S4
     E6 --> S5
-    E7 --> S1
+    E7 --> S6
+    E8 --> S4
+    E8 --> S6
+    E9 --> S1
     
     S1 --> Sch2
     S2 --> Sch3
@@ -601,4 +623,43 @@ graph LR
     
     Legend["Legend: Solid = Current | Dashed = Planned"]
     style Legend fill:#fafafa,stroke:#e5e7eb,stroke-width:1px
+```
+
+---
+
+## 13. Career Roadmap Generation Flow
+
+```mermaid
+flowchart TD
+    %% Career Roadmap Generation Flow - Technical Diagram
+    
+    Start([Request Roadmap]) --> Decode["Decode Role Name<br/>URL decode + sanitize"]
+    
+    Decode --> APICall["Call Mistral AI API<br/>Endpoint: api.mistral.ai/v1/chat<br/>Model: mistral-small-latest"]
+    
+    APICall --> Prompt["Generate Structured Prompt<br/>Request: skills, certs, projects<br/>Format: JSON with required keys"]
+    
+    Prompt --> Parse{API Response?}
+    
+    Parse -->|Success| Validate["Validate JSON<br/>Check required keys<br/>Ensure proper structure"]
+    
+    Parse -->|Failure| Fallback["Fallback to Local Data<br/>Role-specific templates<br/>Hardcoded career paths"]
+    
+    Validate -->|Valid| Return["Return Roadmap<br/>CareerRoadmap schema<br/>Skills/Certs/Projects"]
+    
+    Validate -->|Invalid| Fallback
+    
+    Fallback --> Return
+    
+    Return --> End([Display to User])
+    
+    style Start fill:#dcfce7,stroke:#22c55e,stroke-width:2px
+    style Decode fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+    style APICall fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
+    style Prompt fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style Parse fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Validate fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Fallback fill:#fecaca,stroke:#ef4444,stroke-width:2px
+    style Return fill:#a7f3d0,stroke:#10b981,stroke-width:2px
+    style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
 ```

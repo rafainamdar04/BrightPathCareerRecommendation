@@ -1,5 +1,5 @@
 flowchart TD
-    %% User Interaction - Activity Diagram (Balanced)
+    %% User Interaction - Activity Diagram with Roadmap
     
     Start([Start]) --> Landing[Open App]
     Landing --> Form[Complete Form<br/>Scores, skills, preferences]
@@ -8,6 +8,10 @@ flowchart TD
     Predict --> Results[Display Top 3 Careers<br/>Names + confidence]
     
     Results --> Choice{Next Action?}
+    
+    Choice -->|Roadmap| Road[View Career Roadmap]
+    Road --> RoadCompute["GET /career_roadmap/{role}"]
+    RoadCompute --> RoadShow[Show skills, certs,<br/>projects for role]
     
     Choice -->|Explain| XAI[Request XAI Explanation]
     XAI --> XAICompute["GET /xai (SHAP)"]
@@ -21,6 +25,7 @@ flowchart TD
     Resume --> ResumeCompute["POST /resume/analyze"]
     ResumeCompute --> ResumeShow[Show skill gap + match]
     
+    RoadShow --> Choice
     XAIShow --> Choice
     EvoShow --> Choice
     ResumeShow --> Choice
@@ -36,6 +41,9 @@ flowchart TD
     style Predict fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
     style Results fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
     style Choice fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+    style Road fill:#a7f3d0,stroke:#10b981,stroke-width:2px
+    style RoadCompute fill:#a7f3d0,stroke:#10b981,stroke-width:2px
+    style RoadShow fill:#a7f3d0,stroke:#10b981,stroke-width:2px
     style XAI fill:#fed7aa,stroke:#f97316,stroke-width:2px
     style XAICompute fill:#fed7aa,stroke:#f97316,stroke-width:2px
     style XAIShow fill:#fed7aa,stroke:#f97316,stroke-width:2px

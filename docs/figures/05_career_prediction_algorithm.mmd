@@ -1,5 +1,5 @@
 flowchart TD
-    %% Career Prediction Algorithm - Balanced Flowchart
+    %% Career Prediction Algorithm with Roadmap Generation
     
     Start([User Submits Form]) --> Validate["Validate Input<br/>28 required fields"]
     
@@ -9,7 +9,9 @@ flowchart TD
     
     Model --> Rank["Rank Predictions<br/>Sort by probability<br/>Select top 3 careers"]
     
-    Rank --> Output["Return Results<br/>Career names<br/>Confidence scores<br/>Probabilities"]
+    Rank --> Roadmap["Fetch Roadmaps<br/>Mistral AI API call<br/>Fallback to local data"]
+    
+    Roadmap --> Output["Return Results<br/>Career names + confidence<br/>Skills/certifications/projects"]
     
     Output --> End([Display to User])
     
@@ -18,5 +20,6 @@ flowchart TD
     style Preprocess fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
     style Model fill:#e9d5ff,stroke:#a855f7,stroke-width:3px
     style Rank fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Roadmap fill:#fed7aa,stroke:#f97316,stroke-width:2px
     style Output fill:#dcfce7,stroke:#22c55e,stroke-width:2px
     style End fill:#dcfce7,stroke:#22c55e,stroke-width:2px
