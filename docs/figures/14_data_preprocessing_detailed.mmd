@@ -1,94 +1,29 @@
-flowchart TB
-    %% Comprehensive Data Preprocessing Flowchart
+flowchart LR
+    %% Simplified Data Preprocessing Pipeline
     
-    Start([Start: Raw Data Collection]) --> DataSource["Data Sources<br/>- Job Market Data<br/>- Career Progression Records<br/>- Skills Database<br/>- Salary Information"]
+    Start([Raw Data<br/>20,000 samples]) --> Clean["Data Cleaning<br/>• Handle missing values<br/>• Remove duplicates<br/>• Outlier detection"]
     
-    DataSource --> LoadData["Load Raw Dataset<br/>Format: CSV<br/>Initial Records: 20,000"]
+    Clean --> Separate["Feature Separation<br/>14 Numerical | 14 Categorical<br/>Target: 34 job roles"]
     
-    LoadData --> Inspect["Initial Data Inspection<br/>- Check dimensions<br/>- Identify data types<br/>- Detect missing values<br/>- Analyze distributions"]
+    Separate --> Numerical["Numerical Pipeline<br/>Standard Scaler<br/>z = (x - μ) / σ"]
+    Separate --> Categorical["Categorical Pipeline<br/>One-Hot Encoding<br/>→ 63 features"]
     
-    Inspect --> MissingCheck{Missing<br/>Values?}
+    Numerical --> Combine["Merge Features<br/>Total: 77 dimensions"]
+    Categorical --> Combine
     
-    MissingCheck -->|Yes| HandleMissing["Handle Missing Data<br/>- Impute numerical (mean/median)<br/>- Impute categorical (mode)<br/>- Remove if > 50% missing"]
-    MissingCheck -->|No| DuplicateCheck
+    Combine --> Balance["Class Balancing<br/>Random Oversampling<br/>→ 37,808 samples"]
     
-    HandleMissing --> DuplicateCheck{Duplicate<br/>Records?}
+    Balance --> Split["Train-Test Split<br/>80/20 Stratified<br/>Train: 30,246 | Test: 7,562"]
     
-    DuplicateCheck -->|Yes| RemoveDup["Remove Duplicates<br/>Keep first occurrence"]
-    DuplicateCheck -->|No| Outliers
-    
-    RemoveDup --> Outliers["Outlier Detection<br/>- IQR method<br/>- Z-score analysis<br/>- Domain knowledge"]
-    
-    Outliers --> OutlierHandle{Handle<br/>Outliers?}
-    
-    OutlierHandle -->|Cap/Floor| CapOutliers["Cap at percentiles<br/>5th and 95th"]
-    OutlierHandle -->|Remove| RemoveOutliers["Remove extreme values"]
-    OutlierHandle -->|Keep| FeatureSep
-    
-    CapOutliers --> FeatureSep
-    RemoveOutliers --> FeatureSep
-    
-    FeatureSep["Feature Separation<br/>- Numerical: 14 features<br/>- Categorical: 14 features<br/>- Target: Job roles (34 classes)"]
-    
-    FeatureSep --> NumericalPath["Numerical Processing"]
-    FeatureSep --> CategoricalPath["Categorical Processing"]
-    
-    NumericalPath --> NumFeatures["Numerical Features:<br/>- Experience years<br/>- Education level<br/>- Salary expectations<br/>- Skill proficiency scores<br/>- Project counts<br/>- Certification counts"]
-    
-    NumFeatures --> Normalize["Normalization<br/>Standard Scaler<br/>z = (x - μ) / σ<br/>Mean = 0, Std = 1"]
-    
-    CategoricalPath --> CatFeatures["Categorical Features:<br/>- Current job role<br/>- Industry sector<br/>- Location<br/>- Education field<br/>- Key skills<br/>- Languages"]
-    
-    CatFeatures --> Encode["Encoding Strategy"]
-    
-    Encode --> OneHot["One-Hot Encoding<br/>Convert to binary vectors<br/>Result: 63 features"]
-    
-    Normalize --> Combine["Feature Integration<br/>Concatenate processed features<br/>Total dimensions: 77"]
-    OneHot --> Combine
-    
-    Combine --> FeatureEng["Feature Engineering<br/>- Create interaction terms<br/>- Polynomial features (if needed)<br/>- Domain-specific features"]
-    
-    FeatureEng --> ClassBalance{Class<br/>Imbalance?}
-    
-    ClassBalance -->|Yes| Oversample["Random Oversampling<br/>Balance minority classes<br/>New total: 37,808 samples"]
-    ClassBalance -->|No| DataSplit
-    
-    Oversample --> DataSplit["Train-Test Split<br/>Ratio: 80/20<br/>Stratified sampling<br/>Train: 30,246<br/>Test: 7,562"]
-    
-    DataSplit --> Validation["Create Validation Set<br/>From training data<br/>10% of training set"]
-    
-    Validation --> FinalCheck["Final Quality Check<br/>- Verify no data leakage<br/>- Check distributions<br/>- Validate shapes<br/>- Confirm no NaN values"]
-    
-    FinalCheck --> SaveData["Save Processed Data<br/>- Training set<br/>- Validation set<br/>- Test set<br/>- Scaler objects<br/>- Encoder mappings"]
-    
-    SaveData --> End([Data Ready for<br/>Model Training])
+    Split --> Ready([Ready for Training])
     
     %% Styling
     style Start fill:#dbeafe,stroke:#3b82f6,stroke-width:3px
-    style DataSource fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
-    style LoadData fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
-    style Inspect fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-    style HandleMissing fill:#fecaca,stroke:#ef4444,stroke-width:2px
-    style RemoveDup fill:#fecaca,stroke:#ef4444,stroke-width:2px
-    style FeatureSep fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style NumericalPath fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
-    style CategoricalPath fill:#c7d2fe,stroke:#818cf8,stroke-width:2px
-    style NumFeatures fill:#bae6fd,stroke:#0ea5e9,stroke-width:2px
-    style CatFeatures fill:#ddd6fe,stroke:#a78bfa,stroke-width:2px
-    style Normalize fill:#bbf7d0,stroke:#22c55e,stroke-width:2px
-    style Encode fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style OneHot fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style Combine fill:#fed7aa,stroke:#f97316,stroke-width:2px
-    style FeatureEng fill:#fde68a,stroke:#eab308,stroke-width:2px
-    style Oversample fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
-    style DataSplit fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
-    style Validation fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
-    style FinalCheck fill:#d1fae5,stroke:#10b981,stroke-width:2px
-    style SaveData fill:#d1fae5,stroke:#10b981,stroke-width:2px
-    style End fill:#dcfce7,stroke:#22c55e,stroke-width:3px
-    
-    %% Decision nodes
-    style MissingCheck fill:#fef08a,stroke:#facc15,stroke-width:2px
-    style DuplicateCheck fill:#fef08a,stroke:#facc15,stroke-width:2px
-    style OutlierHandle fill:#fef08a,stroke:#facc15,stroke-width:2px
-    style ClassBalance fill:#fef08a,stroke:#facc15,stroke-width:2px
+    style Clean fill:#fecaca,stroke:#ef4444,stroke-width:2px
+    style Separate fill:#fed7aa,stroke:#f97316,stroke-width:2px
+    style Numerical fill:#bbf7d0,stroke:#22c55e,stroke-width:2px
+    style Categorical fill:#e9d5ff,stroke:#a855f7,stroke-width:2px
+    style Combine fill:#fde68a,stroke:#eab308,stroke-width:2px
+    style Balance fill:#c7d2fe,stroke:#818cf8,stroke-width:2px
+    style Split fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px
+    style Ready fill:#dcfce7,stroke:#22c55e,stroke-width:3px
