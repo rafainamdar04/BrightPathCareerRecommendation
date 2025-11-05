@@ -100,10 +100,10 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
   }
 
   const getScoreBg = (score: number) => {
-    if (score >= 80) return 'from-emerald-500 to-green-500'
-    if (score >= 60) return 'from-blue-500 to-indigo-500'
-    if (score >= 40) return 'from-yellow-500 to-orange-500'
-    return 'from-orange-500 to-red-500'
+    if (score >= 80) return 'bg-emerald-600'
+    if (score >= 60) return 'bg-teal-600'
+    if (score >= 40) return 'bg-yellow-500'
+    return 'bg-orange-500'
   }
 
   return (
@@ -437,7 +437,7 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
       <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
         <div className="flex items-center gap-2 mb-4">
           <svg
-            className="w-6 h-6 text-indigo-600 dark:text-indigo-400"
+            className="w-6 h-6 text-teal-600 dark:text-teal-400"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

@@ -66,7 +66,7 @@ function NumberInput({ name, min, max }: { name: string, min: number, max: numbe
         max={max}
         placeholder="Enter number"
         required
-        className="w-full px-4 py-3 border-2 border-gray-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all duration-200 outline-none"
+        className="w-full px-4 py-3 border-2 border-gray-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 transition-all duration-200 outline-none"
       />
       <div className="absolute -bottom-5 left-0 text-xs text-gray-500 dark:text-gray-400 opacity-0 group-focus-within:opacity-100 transition-opacity">
         Range: {min}-{max}
@@ -81,7 +81,7 @@ function RadioGroup({ name, options }: { name: string, options: readonly string[
       {options.map(o => (
         <label key={o} className="relative flex-1 min-w-[120px] cursor-pointer group">
           <input type="radio" name={name} value={o as string} required className="peer sr-only" />
-          <div className="px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-center font-medium transition-all duration-200 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/30 peer-checked:text-indigo-700 dark:peer-checked:text-indigo-300 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transform hover:-translate-y-0.5">
+          <div className="px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-center font-medium transition-all duration-200 peer-checked:border-teal-500 peer-checked:bg-teal-50 dark:peer-checked:bg-teal-900/30 peer-checked:text-teal-700 dark:peer-checked:text-teal-300 hover:border-teal-300 dark:hover:border-teal-700 hover:shadow-md transform hover:-translate-y-0.5">
             {o}
           </div>
         </label>
@@ -96,7 +96,7 @@ function CheckboxGroup({ name, options }: { name: string, options: readonly stri
       {options.map(o => (
         <label key={o} className="relative cursor-pointer group block">
           <input type="checkbox" name={name} value={o as string} className="peer sr-only" />
-          <div className="px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-sm font-medium transition-all duration-200 peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/30 peer-checked:text-purple-700 dark:peer-checked:text-purple-300 hover:border-purple-300 dark:hover:border-purple-700 hover:shadow-md transform hover:-translate-y-0.5 flex items-center justify-between">
+          <div className="px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-sm font-medium transition-all duration-200 peer-checked:border-cyan-500 peer-checked:bg-cyan-50 dark:peer-checked:bg-cyan-900/30 peer-checked:text-cyan-700 dark:peer-checked:text-cyan-300 hover:border-cyan-300 dark:hover:border-cyan-700 hover:shadow-md transform hover:-translate-y-0.5 flex items-center justify-between">
             <span>{o}</span>
             <div className="relative w-5 h-5 rounded border-2 border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 flex items-center justify-center transition-all">
               <svg className="w-3.5 h-3.5 text-white opacity-0 scale-50 transition-all duration-200 peer-checked:opacity-100 peer-checked:scale-100" fill="none" stroke="currentColor" viewBox="0 0 16 16" strokeWidth="3">

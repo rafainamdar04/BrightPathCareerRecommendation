@@ -249,7 +249,7 @@ export function EnhancedRoadmapDisplay({ data, role }: EnhancedRoadmapDisplayPro
                 Skills to Master
               </h4>
             </div>
-            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+            <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
               {categoryProgress.skills.toFixed(0)}%
             </span>
           </div>
@@ -262,19 +262,19 @@ export function EnhancedRoadmapDisplay({ data, role }: EnhancedRoadmapDisplayPro
               return (
                 <label
                   key={i}
-                  className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-700 transition-all group"
+                  className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-all group"
                 >
                   <input
                     type="checkbox"
                     checked={completed}
                     onChange={() => toggleItem(role, itemId)}
-                    className="mt-0.5 w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                    className="mt-0.5 w-4 h-4 text-teal-600 border-slate-300 rounded focus:ring-teal-500 cursor-pointer"
                   />
                   <span
                     className={`text-sm font-medium flex-1 transition-all ${
                       completed
                         ? 'text-slate-400 dark:text-slate-500 line-through'
-                        : 'text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'
+                        : 'text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400'
                     }`}
                   >
                     {skill}
@@ -323,7 +323,7 @@ export function EnhancedRoadmapDisplay({ data, role }: EnhancedRoadmapDisplayPro
                 Certifications
               </h4>
             </div>
-            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+            <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
               {categoryProgress.certifications.toFixed(0)}%
             </span>
           </div>
@@ -336,19 +336,19 @@ export function EnhancedRoadmapDisplay({ data, role }: EnhancedRoadmapDisplayPro
               return (
                 <label
                   key={i}
-                  className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-700 transition-all group"
+                  className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-all group"
                 >
                   <input
                     type="checkbox"
                     checked={completed}
                     onChange={() => toggleItem(role, itemId)}
-                    className="mt-0.5 w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                    className="mt-0.5 w-4 h-4 text-teal-600 border-slate-300 rounded focus:ring-teal-500 cursor-pointer"
                   />
                   <span
                     className={`text-sm font-medium flex-1 transition-all ${
                       completed
                         ? 'text-slate-400 dark:text-slate-500 line-through'
-                        : 'text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'
+                        : 'text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400'
                     }`}
                   >
                     {cert}
@@ -397,7 +397,7 @@ export function EnhancedRoadmapDisplay({ data, role }: EnhancedRoadmapDisplayPro
                 Projects to Build
               </h4>
             </div>
-            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+            <span className="text-xs font-bold text-teal-600 dark:text-teal-400">
               {categoryProgress.projects.toFixed(0)}%
             </span>
           </div>
@@ -410,19 +410,19 @@ export function EnhancedRoadmapDisplay({ data, role }: EnhancedRoadmapDisplayPro
               return (
                 <label
                   key={i}
-                  className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-indigo-300 dark:hover:border-indigo-700 transition-all group"
+                  className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-all group"
                 >
                   <input
                     type="checkbox"
                     checked={completed}
                     onChange={() => toggleItem(role, itemId)}
-                    className="mt-0.5 w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                    className="mt-0.5 w-4 h-4 text-teal-600 border-slate-300 rounded focus:ring-teal-500 cursor-pointer"
                   />
                   <span
                     className={`text-sm font-medium flex-1 transition-all ${
                       completed
                         ? 'text-slate-400 dark:text-slate-500 line-through'
-                        : 'text-slate-700 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'
+                        : 'text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400'
                     }`}
                   >
                     {project}
