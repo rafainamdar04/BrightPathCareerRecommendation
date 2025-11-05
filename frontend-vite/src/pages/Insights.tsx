@@ -249,11 +249,38 @@ function CareerEvolutionDisplay({ data, role }: { data: any, role: string }) {
   )
 }
 
-function XAIDisplay({ data, role }: { data: any, role: string }) {
+function XAIDisplay({ data, role, formData, availableRoles }: { data: any, role: string, formData?: any, availableRoles?: string[] }) {
   const [showChart, setShowChart] = useState<boolean>(false)
   const [sortMode, setSortMode] = useState<'abs' | 'raw'>('abs')
   const [polarity, setPolarity] = useState<'all' | 'pos' | 'neg'>('all')
   const [topK, setTopK] = useState<number>(10)
+  const [showCounterfactual, setShowCounterfactual] = useState<boolean>(false)
+  const [counterfactualTarget, setCounterfactualTarget] = useState<string>('')
+  const [counterfactualData, setCounterfactualData] = useState<any>(null)
+  const [loadingCounterfactual, setLoadingCounterfactual] = useState<boolean>(false)
+
+  const fetchCounterfactual = async (targetRole: string) => {
+    if (!formData || !targetRole) return
+    setLoadingCounterfactual(true)
+    try {
+      const res = await fetchWithTimeout(
+        apiUrl(`/xai_counterfactual/${encodeURIComponent(targetRole)}?max_changes=3`),
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+          timeoutMs: 15000
+        }
+      )
+      const result = await res.json()
+      setCounterfactualData(result)
+    } catch (err: any) {
+      console.error('Counterfactual fetch error:', err)
+      setCounterfactualData({ error: err.message || 'Failed to fetch counterfactual' })
+    } finally {
+      setLoadingCounterfactual(false)
+    }
+  }
 
   const featureMap: Record<string, number> = data?.feature_contributions || data?.shap_values || {}
   const pairs = Object.entries(featureMap)
@@ -435,6 +462,214 @@ function XAIDisplay({ data, role }: { data: any, role: string }) {
         </div>
       )}
 
+      {/* NEW: Prediction Confidence */}
+      {data?.confidence && (
+        <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+          <div className="flex items-center gap-3 mb-4">
+            <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h4 className="text-lg font-bold text-slate-900 dark:text-white">Prediction Confidence</h4>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4 mb-4">
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-4 text-center">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Confidence Score</p>
+              <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                {(data.confidence.confidence_score * 100).toFixed(1)}%
+              </p>
+            </div>
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-4 text-center">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Confidence Level</p>
+              <p className={`text-lg font-bold ${
+                data.confidence.confidence_level === 'Very High' ? 'text-emerald-600' :
+                data.confidence.confidence_level === 'High' ? 'text-blue-600' :
+                data.confidence.confidence_level === 'Moderate' ? 'text-amber-600' : 'text-red-600'
+              }`}>
+                {data.confidence.confidence_level}
+              </p>
+            </div>
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-4 text-center">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Predicted Career</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                {data.confidence.predicted_career}
+              </p>
+            </div>
+          </div>
+          {data.confidence.probability_distribution && data.confidence.probability_distribution.length > 1 && (
+            <div>
+              <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">Probability Distribution:</p>
+              <div className="space-y-2">
+                {data.confidence.probability_distribution.slice(0, 5).map((item: any, i: number) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="text-xs text-slate-600 dark:text-slate-400 w-32 truncate">{item.career}</span>
+                    <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                        style={{ width: `${item.probability * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 w-12 text-right">
+                      {(item.probability * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* NEW: Improvement Recommendations */}
+      {data?.improvement_recommendations && data.improvement_recommendations.length > 0 && (
+        <div className="mb-6 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800">
+          <div className="flex items-center gap-3 mb-4">
+            <svg className="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <h4 className="text-lg font-bold text-slate-900 dark:text-white">Personalized Improvement Plan</h4>
+          </div>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            Based on your profile, here are the top areas to improve for {role}:
+          </p>
+          <div className="space-y-4">
+            {data.improvement_recommendations.map((rec: any, i: number) => (
+              <div key={i} className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-amber-200 dark:border-amber-700">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-semibold text-slate-900 dark:text-white">{rec.feature}</span>
+                  <span className={`px-2 py-1 rounded text-xs font-bold ${
+                    rec.priority === 'High' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' :
+                    rec.priority === 'Medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' :
+                    'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                  }`}>
+                    {rec.priority} Priority
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
+                  Current impact: <span className="font-semibold text-red-600">{rec.current_impact}</span>
+                </p>
+                {rec.suggestions && rec.suggestions.length > 0 && (
+                  <div className="mt-3">
+                    <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Action Steps:</p>
+                    <ul className="space-y-1">
+                      {rec.suggestions.map((sug: string, j: number) => (
+                        <li key={j} className="text-xs text-slate-600 dark:text-slate-400 flex items-start gap-2">
+                          <svg className="w-3 h-3 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>{sug}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* NEW: Counterfactual "What If" Analysis */}
+      {formData && availableRoles && availableRoles.length > 1 && (
+        <div className="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h4 className="text-lg font-bold text-slate-900 dark:text-white">What Would It Take?</h4>
+            </div>
+            <button
+              onClick={() => setShowCounterfactual(!showCounterfactual)}
+              className="px-3 py-2 rounded-lg text-sm bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+            >
+              {showCounterfactual ? 'Hide' : 'Explore Alternative Careers'}
+            </button>
+          </div>
+          
+          {showCounterfactual && (
+            <div className="mt-4">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+                See what you'd need to change to qualify for a different career role:
+              </p>
+              <div className="flex items-center gap-3 mb-4">
+                <select
+                  className="flex-1 input-base"
+                  value={counterfactualTarget}
+                  onChange={(e) => setCounterfactualTarget(e.target.value)}
+                >
+                  <option value="">Select a target career...</option>
+                  {availableRoles.filter(r => r !== role).map(r => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => counterfactualTarget && fetchCounterfactual(counterfactualTarget)}
+                  disabled={!counterfactualTarget || loadingCounterfactual}
+                  className="px-4 py-2 rounded-lg text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {loadingCounterfactual ? 'Analyzing...' : 'Analyze'}
+                </button>
+              </div>
+
+              {counterfactualData && !counterfactualData.error && (
+                <div className="bg-white dark:bg-slate-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">Transition Path</p>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white">
+                        {counterfactualData.current_role} → {counterfactualData.target_role}
+                      </p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      counterfactualData.feasibility === 'High' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' :
+                      counterfactualData.feasibility === 'Moderate' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' :
+                      'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                    }`}>
+                      {counterfactualData.feasibility} Feasibility
+                    </span>
+                  </div>
+                  
+                  {counterfactualData.changes_needed && counterfactualData.changes_needed.length > 0 ? (
+                    <div className="space-y-3 mt-4">
+                      <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">Changes Needed:</p>
+                      {counterfactualData.changes_needed.map((change: any, i: number) => (
+                        <div key={i} className="bg-slate-50 dark:bg-slate-900 rounded p-3 border border-slate-200 dark:border-slate-700">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-sm font-semibold text-slate-900 dark:text-white">{change.feature}</span>
+                            <span className={`text-xs font-bold ${
+                              change.direction === 'increase' ? 'text-emerald-600' : 'text-blue-600'
+                            }`}>
+                              {change.direction === 'increase' ? '↑ Increase' : '→ Adjust'}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">
+                            Current: <span className="font-semibold">{change.current_value}</span>
+                          </p>
+                          <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
+                            Impact: <span className="font-semibold text-purple-600">{change.impact_difference}</span>
+                          </p>
+                          <p className="text-xs text-slate-700 dark:text-slate-300 italic">{change.suggestion}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
+                      Your profile is already well-suited for this role!
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {counterfactualData?.error && (
+                <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 border border-red-200 dark:border-red-800">
+                  <p className="text-sm text-red-600 dark:text-red-400">{counterfactualData.error}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Real model architecture visualization */}
       <ModelArchitectureDisplay />
     </motion.div>
@@ -450,16 +685,15 @@ export function Insights() {
   const [compareMode, setCompareMode] = useState(false)
   const [roleB, setRoleB] = useState<string | null>(null)
 
-  const [evolution, setEvolution] = useState<any>(null)
-  const [loading, setLoading] = useState<{ evolution: boolean }>({ evolution: false })
   const [error, setError] = useState<string | null>(null)
 
   // Cache role-specific data so switching tabs/roles is instant
   const [roleData, setRoleData] = useState<Record<string, {
+    evolution?: any
     roadmap?: any
     xai?: any
-    loading?: { roadmap: boolean; xai: boolean }
-    error?: { roadmap?: string; xai?: string }
+    loading?: { evolution: boolean; roadmap: boolean; xai: boolean }
+    error?: { evolution?: string; roadmap?: string; xai?: string }
   }>>({})
 
   useEffect(() => {
@@ -508,28 +742,79 @@ export function Insights() {
     }
   }, [])
 
-  // Fetch evolution whenever formData or selected role changes
+  // Fetch evolution for a specific role and cache it
+  const fetchEvolutionForRole = async (r: string) => {
+    if (!formData || !r) return
+    // Skip if already loaded
+    if (roleData[r]?.evolution) return
+    
+    setRoleData(prev => ({
+      ...prev,
+      [r]: {
+        ...(prev[r] || {}),
+        loading: { 
+          evolution: true, 
+          roadmap: prev[r]?.loading?.roadmap || false, 
+          xai: prev[r]?.loading?.xai || false 
+        },
+        error: { 
+          ...(prev[r]?.error || {}),
+          evolution: undefined 
+        }
+      }
+    }))
+    
+    try {
+      const qs = `?role=${encodeURIComponent(r)}`
+      const evoRes = await fetchWithTimeout(apiUrl(`/predict_career_evolution${qs}`), {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify(formData),
+        timeoutMs: 15000
+      })
+      const evoData = await evoRes.json()
+      
+      setRoleData(prev => ({
+        ...prev,
+        [r]: {
+          ...(prev[r] || {}),
+          evolution: evoData,
+          loading: { 
+            evolution: false, 
+            roadmap: prev[r]?.loading?.roadmap || false, 
+            xai: prev[r]?.loading?.xai || false 
+          }
+        }
+      }))
+    } catch (err: any) {
+      setRoleData(prev => ({
+        ...prev,
+        [r]: {
+          ...(prev[r] || {}),
+          loading: { 
+            evolution: false, 
+            roadmap: prev[r]?.loading?.roadmap || false, 
+            xai: prev[r]?.loading?.xai || false 
+          },
+          error: {
+            ...(prev[r]?.error || {}),
+            evolution: err.message || 'Failed to load evolution'
+          }
+        }
+      }))
+    }
+  }
+
+  // Fetch evolution whenever role or roleB changes
   useEffect(() => {
     if (!formData) return
-    let cancelled = false
-    async function load() {
-      try {
-        setLoading({ evolution: true })
-        const qs = role ? `?role=${encodeURIComponent(role)}` : ''
-        const evoRes = await fetchWithTimeout(apiUrl(`/predict_career_evolution${qs}`), {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData)
-        })
-        const evoData = await evoRes.json()
-        if (!cancelled) setEvolution(evoData)
-      } catch (err: any) {
-        if (!cancelled) setError(err.message || 'Failed to load evolution')
-      } finally {
-        if (!cancelled) setLoading({ evolution: false })
-      }
-    }
-    load()
-    return () => { cancelled = true }
+    if (role) fetchEvolutionForRole(role)
   }, [formData, role])
+
+  useEffect(() => {
+    if (!formData || !compareMode) return
+    if (roleB) fetchEvolutionForRole(roleB)
+  }, [formData, roleB, compareMode])
 
   // Fetch per-role data (roadmap + XAI) and cache
   const fetchForRole = async (r: string) => {
@@ -538,8 +823,16 @@ export function Insights() {
       ...prev,
       [r]: {
         ...(prev[r] || {}),
-        loading: { roadmap: true, xai: true },
-        error: { roadmap: undefined, xai: undefined }
+        loading: { 
+          evolution: prev[r]?.loading?.evolution || false,
+          roadmap: true, 
+          xai: true 
+        },
+        error: { 
+          ...(prev[r]?.error || {}),
+          roadmap: undefined, 
+          xai: undefined 
+        }
       }
     }))
     try {
@@ -553,10 +846,17 @@ export function Insights() {
       setRoleData(prev => ({
         ...prev,
         [r]: {
+          ...(prev[r] || {}),
           roadmap: rdData,
           xai: xData,
-          loading: { roadmap: false, xai: false },
-          error: {}
+          loading: { 
+            evolution: prev[r]?.loading?.evolution || false,
+            roadmap: false, 
+            xai: false 
+          },
+          error: {
+            ...(prev[r]?.error || {})
+          }
         }
       }))
     } catch (e: any) {
@@ -564,8 +864,16 @@ export function Insights() {
         ...prev,
         [r]: {
           ...(prev[r] || {}),
-          loading: { roadmap: false, xai: false },
-          error: { roadmap: e?.message, xai: e?.message }
+          loading: { 
+            evolution: prev[r]?.loading?.evolution || false,
+            roadmap: false, 
+            xai: false 
+          },
+          error: { 
+            ...(prev[r]?.error || {}),
+            roadmap: e?.message, 
+            xai: e?.message 
+          }
         }
       }))
     }
@@ -758,19 +1066,43 @@ export function Insights() {
 
         {/* Panels */}
         <div className="space-y-6">
-          {/* Evolution (same for both since it depends on profile) */}
+          {/* Evolution - Now role-specific! */}
           {activeTab === 'evolution' && (
-            loading.evolution ? (
-              <div className="card p-6">Loading evolution…</div>
-            ) : evolution ? (
-              compareMode && role && roleB ? (
-                <div className="grid md:grid-cols-2 gap-6">
-                  <CareerEvolutionDisplay data={evolution} role={role} />
-                  <CareerEvolutionDisplay data={evolution} role={roleB} />
+            compareMode && role && roleB ? (
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  {roleData[role]?.loading?.evolution ? (
+                    <div className="card p-6">Loading evolution for {role}…</div>
+                  ) : roleData[role]?.evolution ? (
+                    <CareerEvolutionDisplay data={roleData[role].evolution} role={role} />
+                  ) : roleData[role]?.error?.evolution ? (
+                    <div className="card p-6 text-red-500">{roleData[role].error.evolution}</div>
+                  ) : (
+                    <div className="card p-6">No evolution data available</div>
+                  )}
                 </div>
-              ) : role ? (
-                <CareerEvolutionDisplay data={evolution} role={role} />
-              ) : null
+                <div>
+                  {roleData[roleB]?.loading?.evolution ? (
+                    <div className="card p-6">Loading evolution for {roleB}…</div>
+                  ) : roleData[roleB]?.evolution ? (
+                    <CareerEvolutionDisplay data={roleData[roleB].evolution} role={roleB} />
+                  ) : roleData[roleB]?.error?.evolution ? (
+                    <div className="card p-6 text-red-500">{roleData[roleB].error.evolution}</div>
+                  ) : (
+                    <div className="card p-6">No evolution data available</div>
+                  )}
+                </div>
+              </div>
+            ) : role ? (
+              roleData[role]?.loading?.evolution ? (
+                <div className="card p-6">Loading evolution…</div>
+              ) : roleData[role]?.evolution ? (
+                <CareerEvolutionDisplay data={roleData[role].evolution} role={role} />
+              ) : roleData[role]?.error?.evolution ? (
+                <div className="card p-6 text-red-500">{roleData[role].error.evolution}</div>
+              ) : (
+                <div className="card p-6">No evolution data available</div>
+              )
             ) : null
           )}
 
@@ -808,14 +1140,14 @@ export function Insights() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   {roleData[role]?.xai ? (
-                    <XAIDisplay data={roleData[role].xai} role={role} />
+                    <XAIDisplay data={roleData[role].xai} role={role} formData={formData} availableRoles={availableRoles} />
                   ) : (
                     <div className="card p-6">Loading XAI…</div>
                   )}
                 </div>
                 <div>
                   {roleData[roleB]?.xai ? (
-                    <XAIDisplay data={roleData[roleB].xai} role={roleB} />
+                    <XAIDisplay data={roleData[roleB].xai} role={roleB} formData={formData} availableRoles={availableRoles} />
                   ) : (
                     <div className="card p-6">Loading XAI…</div>
                   )}
@@ -823,7 +1155,7 @@ export function Insights() {
               </div>
             ) : (
               roleData[role]?.xai ? (
-                <XAIDisplay data={roleData[role].xai} role={role} />
+                <XAIDisplay data={roleData[role].xai} role={role} formData={formData} availableRoles={availableRoles} />
               ) : (
                 <div className="card p-6">Loading XAI…</div>
               )

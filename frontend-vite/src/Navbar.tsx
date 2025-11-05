@@ -13,22 +13,22 @@ export function Navbar({ currentPage, onNavigate, darkMode, toggleDarkMode }: Na
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'career', label: 'Career Recommendation' },
-    { id: 'evolution', label: 'Career Evolution' },
-    { id: 'xai', label: 'XAI Analysis' },
-    { id: 'roadmap', label: 'Career Roadmap' },
+    { id: 'insights', label: 'Career Insights' },
   ]
 
   return (
     <>
-  <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#111827]/80 border-b border-[#E4E4E7] dark:border-[#1F2937] backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-[#111827]/60">
+  <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/70 dark:bg-slate-950/70 border-b border-slate-200/70 dark:border-slate-800 shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => onNavigate('home')}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary text-white shadow-sm group-hover:shadow-md transition-all duration-200 ease-out">
-                <span className="font-extrabold text-xl">B</span>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md group-hover:scale-[1.02] transition-all duration-300 ease-in-out bg-gradient-primary">
+                <span className="text-white font-extrabold text-xl">B</span>
               </div>
-              <span className="text-xl font-extrabold text-zinc-900 dark:text-gray-100">BrightPath</span>
+              <span className="text-xl font-extrabold bg-gradient-to-r from-primary to-primary-600 bg-clip-text text-transparent">
+                BrightPath
+              </span>
             </div>
 
             {/* Desktop Navigation */}
@@ -37,10 +37,10 @@ export function Navbar({ currentPage, onNavigate, darkMode, toggleDarkMode }: Na
                 <button
                   key={item.id}
                   onClick={() => onNavigate(item.id)}
-                  className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-400 ${
+                  className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/40 ${
                     currentPage === item.id
-                      ? 'text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/20'
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100/60 dark:hover:bg-slate-800 hover:text-primary-700 dark:hover:text-primary-300 hover:scale-[1.02]'
+                      ? 'text-primary bg-white/60 dark:bg-white/10 border border-primary/20'
+                      : 'text-slate-700 dark:text-slate-200 hover:bg-white/50 dark:hover:bg-white/5 hover:text-primary hover:scale-[1.02]'
                   }`}
                 >
                   {item.label}
@@ -52,10 +52,10 @@ export function Navbar({ currentPage, onNavigate, darkMode, toggleDarkMode }: Na
             <div className="flex items-center space-x-3">
               <button
                 onClick={toggleDarkMode}
-                className="p-2 rounded-xl border border-[#E4E4E7] dark:border-[#1F2937] bg-white dark:bg-[#111827] hover:bg-zinc-50 dark:hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                className="p-2 rounded-xl border border-white/20 bg-white/30 dark:border-white/10 dark:bg-white/10 hover:bg-white/40 dark:hover:bg-white/15 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/40"
                 aria-label="Toggle theme"
               >
-                <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {darkMode ? (
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                   ) : (
@@ -67,11 +67,11 @@ export function Navbar({ currentPage, onNavigate, darkMode, toggleDarkMode }: Na
               {/* Hamburger menu button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden p-2 rounded-lg border border-[#E4E4E7] dark:border-[#1F2937] hover:bg-zinc-50 dark:hover:bg-gray-800 transition-colors"
+                className="md:hidden p-2 rounded-lg border border-primary/20 hover:bg-white/10 transition-colors"
                 aria-label="Toggle menu"
               >
                 <svg
-                  className="w-6 h-6 text-indigo-600 dark:text-indigo-400"
+                  className="w-6 h-6 text-primary"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -93,7 +93,7 @@ export function Navbar({ currentPage, onNavigate, darkMode, toggleDarkMode }: Na
             isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
-          <div className="px-4 pt-2 pb-4 space-y-2 bg-white dark:bg-[#111827] border-t border-[#E4E4E7] dark:border-[#1F2937]">
+          <div className="px-4 pt-2 pb-4 space-y-2 bg-white/80 dark:bg-slate-950/80 backdrop-blur border-t border-primary/20">
             {navItems.map(item => (
               <button
                 key={item.id}
@@ -103,8 +103,8 @@ export function Navbar({ currentPage, onNavigate, darkMode, toggleDarkMode }: Na
                 }}
                 className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                   currentPage === item.id
-                    ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400'
-                    : 'text-zinc-700 dark:text-gray-300 hover:bg-zinc-50 dark:hover:bg-gray-800'
+                    ? 'bg-white/60 dark:bg-white/10 text-primary'
+                    : 'text-slate-700 dark:text-slate-200 hover:bg-white/50 dark:hover:bg-white/5'
                 }`}
               >
                 {item.label}

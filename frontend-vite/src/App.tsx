@@ -1,16 +1,36 @@
-import React, { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
 import { LandingPage } from './LandingPage'
 import { Navbar } from './Navbar'
 import { CareerRecommendation } from './pages/CareerRecommendation'
-import { XAIAnalysis } from './pages/XAIAnalysis'
-import { CareerRoadmap } from './pages/CareerRoadmap'
-import { CareerEvolution } from './pages/CareerEvolution'
+import { Insights } from './pages/Insights'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<string>('home')
+  const initialPage = (() => {
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const qp = params.get('page')
+      if (qp) return qp
+    } catch {}
+    return 'home'
+  })()
+
+  const [currentPage, setCurrentPage] = useState<string>(initialPage)
   const [darkMode, setDarkMode] = useState<boolean>(() => document.documentElement.classList.contains('dark'))
   const [recommendedCareers, setRecommendedCareers] = useState<Array<{ career: string; probability: number }>>([])
+
+  // Keep URL in sync with nav state for shareable links
+  useEffect(() => {
+    try {
+      const url = new URL(window.location.href)
+      url.searchParams.set('page', currentPage)
+      if (currentPage !== 'insights') {
+        url.searchParams.delete('role')
+        url.searchParams.delete('tab')
+      }
+      window.history.replaceState(null, '', url.toString())
+    } catch {}
+  }, [currentPage])
 
   const toggleDarkMode = () => {
     const el = document.documentElement
@@ -29,12 +49,8 @@ function App() {
         return <LandingPage onGetStarted={() => setCurrentPage('career')} />
       case 'career':
         return <CareerRecommendation onCareersRecommended={setRecommendedCareers} />
-      case 'evolution':
-        return <CareerEvolution />
-      case 'xai':
-        return <XAIAnalysis />
-      case 'roadmap':
-        return <CareerRoadmap />
+      case 'insights':
+        return <Insights />
       default:
         return <LandingPage onGetStarted={() => setCurrentPage('career')} />
     }
@@ -48,18 +64,9 @@ function App() {
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
       />
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentPage}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          className="px-4 sm:px-6 lg:px-8 py-6"
-        >
-          {renderPage()}
-        </motion.div>
-      </AnimatePresence>
+      <ErrorBoundary>
+        {renderPage()}
+      </ErrorBoundary>
     </div>
   )
 }
