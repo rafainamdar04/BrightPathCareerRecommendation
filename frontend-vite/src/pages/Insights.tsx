@@ -27,14 +27,14 @@ function ModelArchitectureDisplay() {
     const fetchArchitecture = async () => {
       try {
         // Fetch architecture details
-        const archRes = await fetch('http://localhost:8000/model_architecture')
+        const archRes = await fetch(apiUrl('/model_architecture'))
         if (archRes.ok) {
           const archData = await archRes.json()
           setArchitecture(archData)
         }
 
         // Fetch visualization
-        const vizRes = await fetch('http://localhost:8000/model_architecture/visualization')
+        const vizRes = await fetch(apiUrl('/model_architecture/visualization'))
         if (vizRes.ok) {
           const vizData = await vizRes.json()
           setVisualizationPath(vizData.visualization_path)

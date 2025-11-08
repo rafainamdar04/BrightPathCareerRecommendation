@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { analyzeSkillGap, extractUserSkills, SkillGapResult } from '../utils/skillGapAnalysis'
+import { apiUrl } from '../utils/api'
 
 interface SkillGapAnalysisProps {
   roadmapSkills: string[]
@@ -58,7 +59,7 @@ export function SkillGapAnalysis({ roadmapSkills, formData, role }: SkillGapAnal
       const formDataToSend = new FormData()
       formDataToSend.append('file', file)
 
-      const response = await fetch('http://localhost:8000/upload_resume', {
+      const response = await fetch(apiUrl('/upload_resume'), {
         method: 'POST',
         body: formDataToSend,
       })

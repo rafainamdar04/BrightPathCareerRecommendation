@@ -1,3 +1,7 @@
+# ====================================
+# Python Backend
+# ====================================
+
 # Python bytecode and caches
 __pycache__/
 *.py[cod]
@@ -11,9 +15,6 @@ __pycache__/
 build/
 develop-eggs/
 dist/
-frontend-vite/dist/
-node_modules/
-frontend-vite/node_modules/
 downloads/
 eggs/
 .eggs/
@@ -30,13 +31,17 @@ share/python-wheels/
 pip-wheel-metadata/
 MANIFEST
 
-# Virtual environments
+# Virtual environments - ALL variants
 .venv/
 venv/
+venv312/
 ENV/
 env/
 env.bak/
 venv.bak/
+*.venv/
+brightpath_venv/
+/d/brightpath_venv/
 .python-version
 
 # Unit test / coverage reports
@@ -64,21 +69,130 @@ uvicorn.log
 # Jupyter
 .ipynb_checkpoints/
 
-# dotenv / secrets
+# ====================================
+# Environment Variables & Secrets
+# ====================================
+
+# dotenv / secrets - ALL variants
 .env
 .env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 !.env.example
 secrets.*
+secrets.json
+.secrets/
+credentials.json
+*.env
 
-# IDE / Editor
+# ====================================
+# Node.js / Frontend
+# ====================================
+
+# Dependencies
+node_modules/
+frontend-vite/node_modules/
+jspm_packages/
+bower_components/
+
+# Production build
+frontend-vite/dist/
+frontend-vite/build/
+frontend-vite/.vite/
+.next/
+.nuxt/
+out/
+
+# Frontend testing
+frontend-vite/coverage/
+.nyc_output/
+
+# Frontend logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Yarn
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ====================================
+# IDE / Editors
+# ====================================
 .vscode/
 .idea/
 *.iml
+*.code-workspace
+.history/
 
-# OS files
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.vim/
+
+# ====================================
+# Operating System Files
+# ====================================
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
 Thumbs.db
-desktop.ini
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ====================================
+# Machine Learning & Data
+# ====================================
 
 # Data and model artifacts (scoped to backend)
 # Keep placeholders if needed: create a backend/data/.gitkeep or README.md to track the folder
@@ -97,13 +211,26 @@ models/
 *.joblib
 *.h5
 !backend/career_evolution_model.h5
+!backend/career_evolution_advanced.h5
+!backend/time_prediction_model.h5
 *.pt
 *.onnx
 *.bin
+*.pth
+checkpoints/
+*.ckpt
+
+# Training metrics (if too large)
+# *_training_metrics.json
+# model_comparison_report.json
 
 # Databases
 *.sqlite3
 *.db
+
+# ====================================
+# Generated Files & Artifacts
+# ====================================
 
 # Reports / generated assets
 reports/
@@ -111,5 +238,47 @@ reports/
 # Static build artifacts (sourcemaps)
 static/**/*.map
 
+# Backend static uploads/temp
+backend/static/uploads/
+backend/static/temp/
+
+# Generated figures and documentation
+# (Uncomment if these are regenerated and shouldn't be tracked)
+# backend/figures/
+# *_COMPLETE.md
+# *_DOCUMENTATION.md
+
+# ====================================
+# Temporary & Backup Files
+# ====================================
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+backup/
+backups/
+
+# Git merge files
+*.orig
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+
 # Windows reserved name artifact occasionally appearing in listings
 nul
+
+# ====================================
+# Project Specific
+# ====================================
+
+# Shell scripts that might contain sensitive info (optional)
+# Uncomment if your .bat/.sh files contain secrets
+# *.bat
+# *.sh
+
+# Cache directories
+.cache/
+*.cache

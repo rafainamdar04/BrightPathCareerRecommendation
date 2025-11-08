@@ -1,5 +1,5 @@
 import { fetchWithTimeout } from '../utils/http'
-import type { Top3CareerOutput, RoadmapResponse, XAIResponse, EvolutionResponse } from '../types/api'
+import type { Top3CareerOutput, RoadmapResponse, XAIResponse, EvolutionResponse, CounterfactualResponse } from '../types/api'
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Bar } from 'react-chartjs-2'
@@ -14,6 +14,10 @@ import {
 import { EnhancedRoadmapDisplay } from '../components/EnhancedRoadmapDisplay'
 import { apiUrl } from '../utils/api'
 import { SkillGapAnalysis } from '../components/SkillGapAnalysis'
+import { CounterfactualSelector } from '../components/CounterfactualSelector'
+import { RecommendationsDisplay } from '../components/RecommendationsDisplay'
+import { ShapBarChart } from '../components/ShapBarChart'
+import { ConfidenceGauge } from '../components/ConfidenceGauge'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
@@ -28,14 +32,14 @@ function ModelArchitectureDisplay() {
     const fetchArchitecture = async () => {
       try {
         // Fetch architecture details
-        const archRes = await fetch('http://localhost:8000/model_architecture')
+        const archRes = await fetch(apiUrl('/model_architecture'))
         if (archRes.ok) {
           const archData = await archRes.json()
           setArchitecture(archData)
         }
 
         // Fetch visualization
-        const vizRes = await fetch('http://localhost:8000/model_architecture/visualization')
+        const vizRes = await fetch(apiUrl('/model_architecture/visualization'))
         if (vizRes.ok) {
           const vizData = await vizRes.json()
           setVisualizationPath(vizData.visualization_path)
@@ -521,7 +525,7 @@ function XAIDisplay({ data, role, onDownload }: { data: any, role: string, onDow
       className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 border border-slate-200 dark:border-slate-800 hover:shadow-2xl transition-shadow duration-300"
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-10 pb-6 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center justify-between mb-8 pb-5 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-4">
           <motion.div 
             whileHover={{ scale: 1.05, rotate: 15 }}
@@ -532,39 +536,21 @@ function XAIDisplay({ data, role, onDownload }: { data: any, role: string, onDow
             </svg>
           </motion.div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">XAI Analysis</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Explainable AI for {role}</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">AI Insights</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Understanding your {role} match</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowChart(!showChart)}
-            className="px-4 py-2.5 rounded-xl font-medium border-2 border-primary/30 text-primary hover:bg-primary/5 transition-all duration-300"
-          >
-            {showChart ? 'Show Image' : 'Interactive Chart'}
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onDownload(role, data)}
-            className="flex items-center gap-2 px-5 py-2.5 btn-primary"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Download Report
-          </motion.button>
-        </div>
-      </div>
-
-      {/* DL Badge and explainer */}
-      <div className="mb-6 flex items-center gap-3 flex-wrap">
-        <div className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-          Powered by Deep Learning
-        </div>
-        <span className="text-xs text-slate-600 dark:text-slate-400">Feature importance is computed with SHAP over the model's outputs to explain why a role was recommended.</span>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => onDownload(role, data)}
+          className="flex items-center gap-2 px-5 py-2.5 btn-primary"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Download Report
+        </motion.button>
       </div>
 
       {/* Summary */}
@@ -573,54 +559,48 @@ function XAIDisplay({ data, role, onDownload }: { data: any, role: string, onDow
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-8 p-6 bg-gradient-to-r from-primary/10 to-primary-600/10 dark:from-primary/10 dark:to-primary/10 rounded-xl border-l-4 border-primary shadow-sm"
+          className="mb-6 p-5 bg-gradient-to-r from-primary/10 to-primary-600/10 dark:from-primary/10 dark:to-primary/10 rounded-xl border-l-4 border-primary"
         >
-          <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed text-base">{data.summary}</p>
+          <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{data.summary}</p>
         </motion.div>
       )}
 
-      {/* Extra images tabs if provided */}
-      {hasExtraImages && (
-        <div className="mb-6 grid gap-4 md:grid-cols-2">
-          {data?.visualization_beeswarm && (
-            <div className="bg-slate-50 dark:bg-slate-800/70 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-              <div className="text-sm font-semibold text-slate-900 dark:text-white mb-2">Global Importance (Beeswarm)</div>
-              <img src={apiUrl(data.visualization_beeswarm)} className="w-full h-auto rounded" alt="SHAP Beeswarm" />
-            </div>
-          )}
-          {data?.visualization_waterfall && (
-            <div className="bg-slate-50 dark:bg-slate-800/70 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-              <div className="text-sm font-semibold text-slate-900 dark:text-white mb-2">Per-Decision Waterfall</div>
-              <img src={apiUrl(data.visualization_waterfall)} className="w-full h-auto rounded" alt="SHAP Waterfall" />
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* SHAP Visualization */}
-      {(!showChart && data.visualization) && (
+      {/* Confidence Score */}
+      {data.confidence && (
         <motion.div 
-          initial={{ opacity: 0, scale: 0.98 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
-          className="mb-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-800/70 rounded-xl p-7 border border-slate-200 dark:border-slate-700"
+          className="mb-8"
         >
-          <div className="flex items-center gap-2 mb-5">
-            <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <ConfidenceGauge confidence={data.confidence} />
+        </motion.div>
+      )}
+
+      {/* SHAP Visualization Image */}
+      {data.visualization && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+          className="mb-8 bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-200 dark:border-slate-800"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <h4 className="text-lg font-bold text-slate-900 dark:text-white">Feature Importance Visualization</h4>
+            <h4 className="text-lg font-bold text-slate-900 dark:text-white">SHAP Feature Analysis</h4>
           </div>
-          <div className="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-4">
             <img 
               src={apiUrl(data.visualization)}
-              alt="SHAP Visualization - Feature Importance"
+              alt="SHAP Feature Importance"
               className="w-full h-auto rounded"
               onError={(e) => {
                 e.currentTarget.style.display = 'none'
                 const parent = e.currentTarget.parentElement
                 if (parent) {
-                  parent.innerHTML = '<div class="text-center py-8 text-slate-500 dark:text-slate-400"><p>Visualization unavailable. Check the detailed factors below.</p></div>'
+                  parent.innerHTML = '<div class="text-center py-6 text-slate-500 dark:text-slate-400 text-sm"><p>Visualization temporarily unavailable</p></div>'
                 }
               }}
             />
@@ -628,45 +608,8 @@ function XAIDisplay({ data, role, onDownload }: { data: any, role: string, onDow
         </motion.div>
       )}
 
-      {/* ChartJS fallback/alternative with controls */}
-      {(showChart || !data.visualization) && labels.length > 0 && (
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mb-8 bg-white dark:bg-slate-900 rounded-xl p-7 border border-slate-200 dark:border-slate-700"
-        >
-          <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-            <h4 className="text-lg font-bold text-slate-900 dark:text-white">Feature Importance (Interactive)</h4>
-            <div className="flex items-center gap-2 text-xs">
-              <label className="flex items-center gap-1">
-                Sort:
-                <select className="input-select" value={sortMode} onChange={(e) => setSortMode(e.target.value as any)}>
-                  <option value="abs">By |impact|</option>
-                  <option value="raw">By raw value</option>
-                </select>
-              </label>
-              <label className="flex items-center gap-1">
-                Filter:
-                <select className="input-select" value={polarity} onChange={(e) => setPolarity(e.target.value as any)}>
-                  <option value="all">All</option>
-                  <option value="pos">Positive</option>
-                  <option value="neg">Negative</option>
-                </select>
-              </label>
-              <label className="flex items-center gap-1">
-                Top K:
-                <input type="number" min={1} max={50} value={topK} onChange={(e) => setTopK(Math.min(50, Math.max(1, Number(e.target.value)||10)))} className="w-16 input-base py-1 px-2" />
-              </label>
-            </div>
-          </div>
-          <div style={{ height: '400px' }}>
-            <Bar data={chartData} options={chartOptions} />
-          </div>
-        </motion.div>
-      )}
 
-      {/* Top Factors */}
+      {/* Key Factors - Simplified and categorized */}
       {data.top_factors && data.top_factors.length > 0 && (
         <motion.div 
           className="mb-8"
@@ -674,70 +617,164 @@ function XAIDisplay({ data, role, onDownload }: { data: any, role: string, onDow
           initial="hidden"
           animate="visible"
         >
-          <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-5">Top Influencing Factors</h4>
-          <div className="grid gap-4">
-            {data.top_factors.map((factor: any, i: number) => (
-              <motion.div 
-                key={i} 
-                variants={fadeInUp}
-                whileHover={{ x: 4, boxShadow: "0 8px 24px rgba(155, 93, 229, 0.15)" }}
-                className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 border border-slate-200 dark:border-slate-700 hover:border-[#9b5de5]/50 transition-all duration-300"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-4 flex-1">
-                    <motion.div 
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-base shadow-md ${
-                        factor.impact === 'positive' ? 'bg-gradient-to-br from-[#9b5de5] to-[#7b3fb8]' : 'bg-gradient-to-br from-red-500 to-red-600'
-                      }`}
-                    >
-                      {i + 1}
-                    </motion.div>
-                    <div className="flex-1">
-                      <h5 className="font-bold text-slate-900 dark:text-white mb-2 text-base">{factor.feature}</h5>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{factor.insight}</p>
+          <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-3">What Influences This Recommendation?</h4>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+            These factors explain why this career was recommended. Focus on improving low-impact areas to strengthen your match.
+          </p>
+          
+          {(() => {
+            // Categorize factors by impact
+            const strongFactors = data.top_factors.filter((f: any) => f.contribution >= 0.05)
+            const weakFactors = data.top_factors.filter((f: any) => f.contribution < 0.05 && f.contribution >= 0)
+            const negativeFactors = data.top_factors.filter((f: any) => f.contribution < 0)
+            
+            return (
+              <div className="space-y-6">
+                {/* Strong Positive Factors */}
+                {strongFactors.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                      <h5 className="font-semibold text-slate-900 dark:text-white text-sm">Strong Matches ({strongFactors.length})</h5>
+                    </div>
+                    <div className="grid gap-3">
+                      {strongFactors.map((factor: any, i: number) => (
+                        <motion.div 
+                          key={i} 
+                          variants={fadeInUp}
+                          className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 border border-emerald-200 dark:border-emerald-800"
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 flex-1">
+                              <span className="text-2xl">✓</span>
+                              <div className="flex-1">
+                                <h6 className="font-semibold text-slate-900 dark:text-white text-sm">{factor.feature}</h6>
+                                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{factor.insight}</p>
+                              </div>
+                            </div>
+                            <div className="px-3 py-1 rounded-md bg-emerald-600 text-white font-bold text-xs">
+                              +{factor.contribution.toFixed(3)}
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
                     </div>
                   </div>
-                  <div className={`px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap ${
-                    factor.impact === 'positive' 
-                      ? 'bg-[#9b5de5]/10 text-[#9b5de5] dark:bg-[#9b5de5]/20 dark:text-[#b78ef5]' 
-                      : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                  }`}>
-                    {factor.impact === 'positive' ? '↑' : '↓'} {factor.contribution.toFixed(3)}
+                )}
+                
+                {/* Areas to Improve */}
+                {(weakFactors.length > 0 || negativeFactors.length > 0) && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                      <h5 className="font-semibold text-slate-900 dark:text-white text-sm">
+                        Areas to Improve ({weakFactors.length + negativeFactors.length})
+                      </h5>
+                    </div>
+                    <div className="grid gap-3">
+                      {[...negativeFactors, ...weakFactors].map((factor: any, i: number) => (
+                        <motion.div 
+                          key={i} 
+                          variants={fadeInUp}
+                          className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 border border-amber-200 dark:border-amber-800"
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 flex-1">
+                              <span className="text-2xl">⚠</span>
+                              <div className="flex-1">
+                                <h6 className="font-semibold text-slate-900 dark:text-white text-sm">{factor.feature}</h6>
+                                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                  {factor.contribution < 0 
+                                    ? `This is working against your match. ${factor.insight}`
+                                    : `Low impact - strengthen this area. ${factor.insight}`
+                                  }
+                                </p>
+                              </div>
+                            </div>
+                            <div className={`px-3 py-1 rounded-md font-bold text-xs ${
+                              factor.contribution < 0
+                                ? 'bg-red-600 text-white'
+                                : 'bg-amber-600 text-white'
+                            }`}>
+                              {factor.contribution.toFixed(3)}
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
+                )}
+              </div>
+            )
+          })()}
+        </motion.div>
+      )}
+
+      {/* LIME Detailed Explanations */}
+      {data.lime_explanation && data.lime_explanation.length > 0 && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mb-8 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-6 border border-slate-200 dark:border-slate-700"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h4 className="text-lg font-bold text-slate-900 dark:text-white">Local Interpretability (LIME)</h4>
+          </div>
+          <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
+            These explanations show how each feature contributes to this specific prediction.
+          </p>
+          <div className="space-y-2">
+            {data.lime_explanation.slice(0, 5).map((item: string, i: number) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + i * 0.05 }}
+                className="flex items-start gap-2 p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700"
+              >
+                <div className="w-6 h-6 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                  {i + 1}
                 </div>
+                <span className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">{item}</span>
               </motion.div>
             ))}
           </div>
         </motion.div>
       )}
 
-      {/* LIME Explanation */}
-      {data.lime_explanation && data.lime_explanation.length > 0 && (
+      {/* Feature Importance Chart - Simplified */}
+      {(data.shap_values || data.feature_contributions) && (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mb-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-7 border border-slate-200 dark:border-slate-700"
+          className="mb-8"
         >
-          <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-5">Detailed Explanations</h4>
-          <div className="space-y-3">
-            {data.lime_explanation.map((item: string, i: number) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
-                whileHover={{ x: 4, boxShadow: "0 4px 12px rgba(155, 93, 229, 0.1)" }}
-                className="flex items-start gap-3 p-4 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 group"
-              >
-                <div className="w-7 h-7 bg-gradient-to-br from-[#9b5de5] to-[#7b3fb8] text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 group-hover:scale-110 transition-transform">
-                  {i + 1}
-                </div>
-                <span className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{item}</span>
-              </motion.div>
-            ))}
-          </div>
+          <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-3">Feature Importance</h4>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            Visual breakdown of which factors contribute most to this recommendation.
+          </p>
+          <ShapBarChart 
+            shapValues={data.shap_values || data.feature_contributions} 
+            maxFeatures={8}
+          />
+        </motion.div>
+      )}
+
+      {/* AI-Powered Action Items */}
+      {data.improvement_recommendations && data.improvement_recommendations.length > 0 && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-3">Personalized Action Plan</h4>
+          <RecommendationsDisplay 
+            recommendations={data.improvement_recommendations}
+          />
         </motion.div>
       )}
     </motion.div>
@@ -1053,17 +1090,17 @@ const fieldConfig = [
   { name: 'Reading_and_writing_skills', label: 'Your reading & writing skills', type: 'radio', options: ['poor', 'medium', 'excellent'], category: 'Personal Capabilities' },
   { name: 'Memory_capability_score', label: 'Your memory & recall ability', type: 'radio', options: ['poor', 'medium', 'excellent'], category: 'Personal Capabilities' },
   
-  // Additional Learning - multi-select (sent as comma-separated)
-  { name: 'Extra_courses_did', label: 'Taken any extra courses?', type: 'checkbox', options: ['Yes', 'No'], category: 'Additional Learning' },
-  { name: 'Certifications', label: 'Certifications you have', type: 'checkbox', options: ['app development', 'distro making', 'full stack', 'hadoop', 'information security', 'machine learning', 'python', 'r programming', 'shell programming'], category: 'Additional Learning' },
-  { name: 'Workshops', label: 'Workshops attended', type: 'checkbox', options: ['cloud computing', 'data science', 'database security', 'game development', 'hacking', 'system designing', 'testing', 'web technologies'], category: 'Additional Learning' },
+  // Additional Learning - single-select to match training data
+  { name: 'Extra_courses_did', label: 'Taken any extra courses?', type: 'radio', options: ['yes', 'no'], category: 'Additional Learning' },
+  { name: 'Certifications', label: 'Primary certification you have', type: 'radio', options: ['app development', 'distro making', 'full stack', 'hadoop', 'information security', 'machine learning', 'python', 'r programming', 'shell programming'], category: 'Additional Learning' },
+  { name: 'Workshops', label: 'Most relevant workshop attended', type: 'radio', options: ['cloud computing', 'data science', 'database security', 'game development', 'hacking', 'system designing', 'testing', 'web technologies'], category: 'Additional Learning' },
   
-  // Interests & Career Preferences
-  { name: 'Interested_subjects', label: 'Subjects that interest you', type: 'checkbox', options: ['Cloud Computing', 'Computer Architecture', 'data engineering', 'hacking', 'IOT', 'Management', 'networks', 'parallel computing', 'programming', 'security', 'Software Engineering'], category: 'Interests & Preferences' },
-  { name: 'Interested_career_area', label: 'Career area drawn to', type: 'radio', options: ['Business process analyst', 'Cloud Computing', 'Data engineering', 'developer', 'security', 'system developer', 'testing', 'Web development'], category: 'Interests & Preferences' },
-  { name: 'Type_of_company_want_to_settle_in', label: 'Type of company to join', type: 'radio', options: ['BPA', 'Cloud Services', 'Finance', 'IoT', 'product development', 'Product based', 'SAP', 'Testing and Maintainance Services', 'Web Services'], category: 'Interests & Preferences' },
-  { name: 'Job_Higher_Studies', label: 'After graduation plans', type: 'radio', options: ['Job', 'Higher Studies', 'Both'], category: 'Interests & Preferences' },
-  { name: 'Management_or_Technical', label: 'Management or technical track?', type: 'radio', options: ['Management', 'Technical'], category: 'Interests & Preferences' },
+  // Interests & Career Preferences - single-select with lowercase to match training
+  { name: 'Interested_subjects', label: 'Primary subject of interest', type: 'radio', options: ['cloud computing', 'computer architecture', 'data engineering', 'hacking', 'iot', 'management', 'networks', 'parallel computing', 'programming', 'security', 'software engineering'], category: 'Interests & Preferences' },
+  { name: 'Interested_career_area', label: 'Career area drawn to', type: 'radio', options: ['business process analyst', 'cloud computing', 'data engineering', 'developer', 'security', 'system developer', 'testing', 'web development'], category: 'Interests & Preferences' },
+  { name: 'Type_of_company_want_to_settle_in', label: 'Type of company to join', type: 'radio', options: ['BPA', 'cloud services', 'finance', 'iot', 'product development', 'product based', 'saas services', 'sales and marketing', 'sap', 'testing and maintainance services', 'web services'], category: 'Interests & Preferences' },
+  { name: 'Job_Higher_Studies', label: 'After graduation plans', type: 'radio', options: ['job', 'higherstudies', 'both'], category: 'Interests & Preferences' },
+  { name: 'Management_or_Technical', label: 'Management or technical track?', type: 'radio', options: ['management', 'technical'], category: 'Interests & Preferences' },
   
   // Work Style
   { name: 'Hard_smart_worker', label: 'Your working style', type: 'radio', options: ['hard worker', 'smart worker', 'both'], category: 'Work Style' },
@@ -1072,21 +1109,26 @@ const fieldConfig = [
 
 const api = {
   top3: async (data: any): Promise<Top3CareerOutput> => {
+    console.log('🚀 API Request URL:', apiUrl('/predict_top3_careers'))
+    console.log('📤 Sending data:', data)
     const res = await fetchWithTimeout(apiUrl('/predict_top3_careers'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
     if (!res.ok) throw new Error(`API error: ${res.status}`)
-    return res.json()
+    const result = await res.json()
+    console.log('📥 Received response:', result)
+    return result
   },
   xai: async (role: string, data: any): Promise<XAIResponse> => {
     const res = await fetchWithTimeout(apiUrl(`/xai_explanations/${encodeURIComponent(role)}?generate_visualization=true`), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
+      timeoutMs: 30000 // 30 seconds for XAI (SHAP/LIME computation + visualization)
     })
     if (!res.ok) throw new Error(`API error: ${res.status}`)
     return res.json()
   },
   roadmap: async (role: string, data: any): Promise<RoadmapResponse> => {
-    const res = await fetchWithTimeout(apiUrl(`/career_roadmap/${encodeURIComponent(role)}`), { timeoutMs: 20000 })
+    const res = await fetchWithTimeout(apiUrl(`/career_roadmap/${encodeURIComponent(role)}`), { timeoutMs: 30000 })
     if (!res.ok) throw new Error(`API error: ${res.status}`)
     return res.json()
   },
@@ -1096,6 +1138,17 @@ const api = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
+      timeoutMs: 30000 // 30 seconds for career evolution
+    })
+    if (!res.ok) throw new Error(`API error: ${res.status}`)
+    return res.json()
+  },
+  counterfactual: async (targetRole: string, data: any, maxChanges: number = 5): Promise<CounterfactualResponse> => {
+    const res = await fetchWithTimeout(apiUrl(`/xai_counterfactual/${encodeURIComponent(targetRole)}?max_changes=${maxChanges}`), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      timeoutMs: 30000 // 30 seconds for counterfactual analysis
     })
     if (!res.ok) throw new Error(`API error: ${res.status}`)
     return res.json()
@@ -1193,17 +1246,18 @@ export function CareerRecommendation({ onCareersRecommended }: { onCareersRecomm
   
   // Selected career for deep dive
   const [selectedCareer, setSelectedCareer] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'evolution' | 'roadmap' | 'xai' | 'skillgap'>('evolution')
+  const [activeTab, setActiveTab] = useState<'evolution' | 'roadmap' | 'xai' | 'skillgap' | 'whatif'>('evolution')
   
   // Data storage for selected career
   const [careerDetails, setCareerDetails] = useState<{
     evolution?: any,
     roadmap?: any,
     xai?: any,
-    loading: { evolution: boolean, roadmap: boolean, xai: boolean, skillgap: boolean },
-    error: { evolution?: string, roadmap?: string, xai?: string, skillgap?: string }
+    whatif?: any,
+    loading: { evolution: boolean, roadmap: boolean, xai: boolean, skillgap: boolean, whatif: boolean },
+    error: { evolution?: string, roadmap?: string, xai?: string, skillgap?: string, whatif?: string }
   }>({
-    loading: { evolution: false, roadmap: false, xai: false, skillgap: false },
+    loading: { evolution: false, roadmap: false, xai: false, skillgap: false, whatif: false },
     error: {}
   })
   
@@ -1294,7 +1348,7 @@ export function CareerRecommendation({ onCareersRecommended }: { onCareersRecomm
   }
 
   // Open inline details instead of modal
-  const openInlineDetails = (tab: 'evolution' | 'skillgap' | 'roadmap' | 'xai', role: string) => {
+  const openInlineDetails = (tab: 'evolution' | 'skillgap' | 'roadmap' | 'xai' | 'whatif', role: string) => {
     setSelectedCareer(role)
     setActiveTab(tab)
     fetchDataForTab(tab, role)
@@ -1304,12 +1358,17 @@ export function CareerRecommendation({ onCareersRecommended }: { onCareersRecomm
   }
 
   // Fetch data for active tab
-  const fetchDataForTab = async (tab: 'evolution' | 'roadmap' | 'xai' | 'skillgap', career?: string) => {
+  const fetchDataForTab = async (tab: 'evolution' | 'roadmap' | 'xai' | 'skillgap' | 'whatif', career?: string) => {
     const targetCareer = career || selectedCareer
     if (!targetCareer || !formData) return
     
-    // Skill gap doesn't need API call, it's computed locally
-    if (tab === 'skillgap') return
+    // Skill gap needs roadmap data, so fetch it if not available
+    if (tab === 'skillgap') {
+      if (!careerDetails.roadmap) {
+        await fetchDataForTab('roadmap', targetCareer)
+      }
+      return
+    }
     
     // Check if data already exists
     if (careerDetails[tab]) return
@@ -1328,6 +1387,8 @@ export function CareerRecommendation({ onCareersRecommended }: { onCareersRecomm
         data = await api.roadmap(targetCareer, formData)
       } else if (tab === 'xai') {
         data = await api.xai(targetCareer, formData)
+      } else if (tab === 'whatif') {
+        data = await api.counterfactual(targetCareer, formData, 5)
       }
       
       setCareerDetails(prev => ({
@@ -1345,7 +1406,7 @@ export function CareerRecommendation({ onCareersRecommended }: { onCareersRecomm
   }
 
   // Change active tab
-  const changeTab = (tab: 'evolution' | 'roadmap' | 'xai' | 'skillgap') => {
+  const changeTab = (tab: 'evolution' | 'roadmap' | 'xai' | 'skillgap' | 'whatif') => {
     setActiveTab(tab)
     fetchDataForTab(tab)
   }
@@ -1392,26 +1453,46 @@ ${xaiData.lime_explanation?.map((e: string, i: number) => `${i + 1}. ${e}`).join
     setError(null)
     setSelectedCareer(null)
     setSelectedForCompare([])
-    const form = e.currentTarget
+    
+    // Get form data from localStorage (where it's been saved as user progresses through steps)
+    const savedData = (() => { 
+      try { 
+        return JSON.parse(localStorage.getItem('careerFormData') || '{}') 
+      } catch { 
+        return {} 
+      } 
+    })()
+    
+    console.log('🔍 DEBUG: Reading from localStorage...')
+    console.log('📦 Saved data:', savedData)
+    
     const formDataObj: any = {}
 
+    // Populate formDataObj with saved data, ensuring all fields have values
     fieldConfig.forEach(f => {
-      if (f.type === 'checkbox') {
-        const checkboxes = form.querySelectorAll(`input[name="${f.name}"]:checked`)
-        const selected = Array.from(checkboxes).map((cb: any) => cb.value)
-        formDataObj[f.name] = selected.join(',')
-      } else if (f.type === 'radio') {
-        const radio = form.querySelector(`input[name="${f.name}"]:checked`) as HTMLInputElement | null
-        formDataObj[f.name] = radio ? radio.value : ''
-      } else if (f.type === 'number') {
-          const el = form.elements.namedItem(f.name) as HTMLInputElement | null;
-          const num = el && el.value !== undefined ? Number(el.value) : 0;
-          formDataObj[f.name] = isNaN(num) ? 0 : num;
+      if (savedData[f.name] !== undefined && savedData[f.name] !== '') {
+        formDataObj[f.name] = savedData[f.name]
+      } else {
+        // Default values for missing fields
+        if (f.type === 'number') {
+          formDataObj[f.name] = 0
+        } else {
+          formDataObj[f.name] = ''
+        }
       }
     })
 
     try {
+      console.log('🎯 Submitting form with data:', formDataObj)
+      console.log('📊 Key fields being sent:')
+      console.log('   OS %:', formDataObj.Acedamic_percentage_in_Operating_Systems)
+      console.log('   Algorithms %:', formDataObj.Percentage_in_Algorithms)
+      console.log('   Coding Rating:', formDataObj.Coding_skills_rating)
+      console.log('   Interested Career:', formDataObj.Interested_career_area)
+      
       const data = await api.top3(formDataObj)
+      console.log('✅ Got predictions:', data.top_predictions)
+      console.log('   Top 3:', data.top_predictions.map((p: any) => p.role).join(', '))
       setResults(data.top_predictions)
       setFormData(formDataObj) // Store form data for later API calls
       // Persist context for Insights page
@@ -1795,6 +1876,7 @@ ${xaiData.lime_explanation?.map((e: string, i: number) => `${i + 1}. ${e}`).join
                                       { key: 'skillgap', label: 'Skills', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
                                       { key: 'roadmap', label: 'Roadmap', icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' },
                                       { key: 'xai', label: 'Insights', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
+                                      { key: 'whatif', label: 'What-If', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
                                     ] as const).map((btn) => (
                                       <motion.button
                                         key={btn.key}
@@ -1923,73 +2005,119 @@ ${xaiData.lime_explanation?.map((e: string, i: number) => `${i + 1}. ${e}`).join
                 </>
           )}
 
-        {/* Selected Career Details with Tabs - hidden when modal open to avoid duplicate */}
+        {/* Selected Career Details with Tabs - Enhanced UX */}
         {selectedCareer && (
-          <div ref={detailsRef} className="mb-8 animate-fadeIn">
-            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-8 border border-slate-200 dark:border-slate-800">
-              {/* Header with Back Button */}
-              <div className="flex items-center justify-between mb-8 pb-6 border-b border-slate-200 dark:border-slate-800">
-                <div>
-                  <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{selectedCareer}</h2>
-                  <p className="text-slate-600 dark:text-slate-400 mt-1">Detailed Career Insights</p>
-                </div>
-                <button
-                  onClick={() => {
-                    setSelectedCareer(null)
-                    resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                  }}
-                  className="flex items-center gap-2 px-4 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                  </svg>
-                  Back to All Careers
-                </button>
-              </div>
-
-              {/* Tab Navigation */}
-              <div className="flex gap-2 mb-8 border-b border-slate-200 dark:border-slate-800 overflow-x-auto" role="tablist" aria-label="Career details tabs">
-                {(['evolution', 'roadmap', 'skillgap', 'xai'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => changeTab(tab)}
-                    className={`px-6 py-3 font-medium text-sm transition-all relative whitespace-nowrap ${
-                      activeTab === tab
-                        ? 'text-slate-900 dark:text-white'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                    role="tab"
-                    aria-selected={activeTab === tab}
-                    aria-controls={`panel-${tab}`}
-                    tabIndex={activeTab === tab ? 0 : -1}
+          <motion.div 
+            ref={detailsRef} 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="mb-8"
+          >
+            <div className="bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              {/* Enhanced Header with Gradient */}
+              <div className="bg-gradient-to-r from-[#9b5de5] to-[#7b3fb8] p-8 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 200 }}
+                        className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+                      >
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      </motion.div>
+                      <div>
+                        <h2 className="text-3xl font-extrabold">{selectedCareer}</h2>
+                        <p className="text-white/80 mt-1 text-sm">Comprehensive Career Intelligence Report</p>
+                      </div>
+                    </div>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05, x: -4 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      setSelectedCareer(null)
+                      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl font-medium transition-all border border-white/20"
                   >
-                    {tab === 'skillgap' ? 'Skill Gap' : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    {activeTab === tab && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-900 dark:bg-slate-100" />
-                    )}
-                  </button>
-                ))}
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back
+                  </motion.button>
+                </div>
               </div>
 
-              {/* Tab Content */}
-              <div className="animate-fadeIn" onKeyDown={(e) => {
-                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-                  const tabs: Array<'evolution'|'roadmap'|'xai'|'skillgap'> = ['evolution','roadmap','skillgap','xai']
-                  const idx = tabs.indexOf(activeTab)
-                  const next = e.key === 'ArrowRight' ? (idx + 1) % tabs.length : (idx - 1 + tabs.length) % tabs.length
-                  changeTab(tabs[next])
-                }
-              }}>
+              {/* Modern Tab Navigation with Icons */}
+              <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 overflow-x-auto">
+                <div className="flex gap-1" role="tablist" aria-label="Career insights navigation">
+                  {([
+                    { key: 'evolution', label: 'Career Evolution', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6', desc: 'Growth trajectory' },
+                    { key: 'roadmap', label: 'Roadmap', icon: 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7', desc: 'Learning path' },
+                    { key: 'skillgap', label: 'Skill Gap', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', desc: 'Your vs Required' },
+                    { key: 'xai', label: 'AI Insights', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z', desc: 'Why this match' },
+                    { key: 'whatif', label: 'What-If Analysis', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', desc: 'Career transitions' }
+                  ] as const).map((tab) => (
+                    <motion.button
+                      key={tab.key}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => changeTab(tab.key)}
+                      className={`group relative px-4 py-4 font-medium text-sm transition-all whitespace-nowrap flex items-center gap-3 ${
+                        activeTab === tab.key
+                          ? 'text-[#9b5de5]'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                      role="tab"
+                      aria-selected={activeTab === tab.key}
+                    >
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                        activeTab === tab.key 
+                          ? 'bg-gradient-to-br from-[#9b5de5] to-[#7b3fb8] text-white shadow-lg shadow-[#9b5de5]/30' 
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-slate-200 dark:group-hover:bg-slate-700'
+                      }`}>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
+                        </svg>
+                      </div>
+                      <div className="text-left">
+                        <div className="font-semibold">{tab.label}</div>
+                        <div className="text-xs opacity-60">{tab.desc}</div>
+                      </div>
+                      {activeTab === tab.key && (
+                        <motion.div 
+                          layoutId="activeTab"
+                          className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#9b5de5] to-[#7b3fb8] rounded-t-full"
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        />
+                      )}
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content Area with Padding */}
+              <div className="p-8">
                 {careerDetails.loading[activeTab] && (
                   <div className="flex flex-col items-center justify-center py-16">
-                    <div className="w-12 h-12 border-4 border-slate-200 dark:border-slate-700 border-t-slate-900 dark:border-t-slate-100 rounded-full animate-spin mb-4" />
-                    <p className="text-slate-600 dark:text-slate-400">Loading {activeTab}...</p>
+                    <div className="w-12 h-12 border-4 border-slate-200 dark:border-slate-700 border-t-[#9b5de5] rounded-full animate-spin mb-4" />
+                    <p className="text-slate-600 dark:text-slate-400 font-medium">Loading {activeTab}...</p>
                   </div>
                 )}
 
                 {careerDetails.error[activeTab] && (
-                  <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                    <p className="text-red-700 dark:text-red-400">{careerDetails.error[activeTab]}</p>
+                  <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      <p className="text-red-700 dark:text-red-400 font-medium">{careerDetails.error[activeTab]}</p>
+                    </div>
                   </div>
                 )}
 
@@ -2042,11 +2170,17 @@ ${xaiData.lime_explanation?.map((e: string, i: number) => `${i + 1}. ${e}`).join
                         )
                       )
                     )}
+                    {activeTab === 'whatif' && (
+                      <CounterfactualSelector 
+                        currentRole={selectedCareer || ''}
+                        userProfile={formData || {}}
+                      />
+                    )}
                   </>
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Error */}

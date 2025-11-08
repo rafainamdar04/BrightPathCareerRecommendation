@@ -6,6 +6,7 @@ import { CareerRecommendation } from './pages/CareerRecommendation'
 import { XAIAnalysis } from './pages/XAIAnalysis'
 import { CareerRoadmap } from './pages/CareerRoadmap'
 import { CareerEvolution } from './pages/CareerEvolution'
+import { CareerInsights } from './pages/CareerInsights'
 
 function App() {
   const [currentPage, setCurrentPage] = useState<string>('home')
@@ -29,6 +30,8 @@ function App() {
         return <LandingPage onGetStarted={() => setCurrentPage('career')} />
       case 'career':
         return <CareerRecommendation onCareersRecommended={setRecommendedCareers} />
+      case 'insights':
+        return <CareerInsights />
       case 'evolution':
         return <CareerEvolution />
       case 'xai':

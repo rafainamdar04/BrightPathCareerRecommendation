@@ -13,9 +13,7 @@ export function Navbar({ currentPage, onNavigate, darkMode, toggleDarkMode }: Na
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'career', label: 'Career Recommendation' },
-    { id: 'evolution', label: 'Career Evolution' },
-    { id: 'xai', label: 'XAI Analysis' },
-    { id: 'roadmap', label: 'Career Roadmap' },
+    { id: 'insights', label: 'Career Insights' },
   ]
 
   return (
